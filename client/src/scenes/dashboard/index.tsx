@@ -1,7 +1,7 @@
 import {Box, useMediaQuery, useTheme} from "@mui/material";
-import DashboardBox from "@/components/DashboardBox.tsx";
-
-type Props = {};
+import Row1 from "@/scenes/dashboard/Row1.tsx";
+import Row2 from "@/scenes/dashboard/Row2.tsx";
+import Row3 from "@/scenes/dashboard/Row3.tsx";
 
 const gridTemplateLarge = `
     "a b c"
@@ -50,9 +50,8 @@ const gridTemplateSmall = `
 `;
 
 
-const Dashboard = (props: Props) => {
+const Dashboard = () => {
     const isAboveMediumScreens = useMediaQuery("(min-width: 1200px)")
-    const { palette } = useTheme();
     return (
         <Box width={"100%"} height={"100%"} display={"grid"} gap={"1.5rem"}
             sx={
@@ -68,16 +67,10 @@ const Dashboard = (props: Props) => {
             }
         >
 
-            <DashboardBox gridArea="a"></DashboardBox>
-            <DashboardBox gridArea="b"></DashboardBox>
-            <DashboardBox gridArea="c"></DashboardBox>
-            <DashboardBox gridArea="d"></DashboardBox>
-            <DashboardBox gridArea="e"></DashboardBox>
-            <DashboardBox gridArea="f"></DashboardBox>
-            <DashboardBox gridArea="g"></DashboardBox>
-            <DashboardBox gridArea="h"></DashboardBox>
-            <DashboardBox gridArea="i"></DashboardBox>
-            <DashboardBox gridArea="j"></DashboardBox>
+            <Row1 />
+            <Row2 />
+            <Row3 />
+
         </Box>
     );
 };
