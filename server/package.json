@@ -19,7 +19,10 @@
     "helmet": "^7.0.0",
     "mongoose": "^4.13.21",
     "mongoose-currency": "^0.2.0",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "pg": "^8.11.1",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.32.1"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
