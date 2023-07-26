@@ -15,12 +15,27 @@ const Navbar = (props: Props) => {
 			<FlexBetween gap='0.75rem'>
 				<PixIcon sx={{ fontSize: "28px" }} />
 				<Typography variant='h4' fontSize='16px'>
-					Finanseer
+					RevBoard
 				</Typography>
 			</FlexBetween>
 
 			{/* RIGHT SIDE */}
 			<FlexBetween gap='2rem'>
+				<Box sx={{ "&:hover": { color: palette.primary[100] } }}>
+					<Link
+						to='/predictions'
+						onClick={() => setSelected("modify_selection")}
+						style={{
+							color:
+								selected === "modify_selection"
+									? "inherit"
+									: palette.grey[700],
+							textDecoration: "inherit",
+						}}
+					>
+						Modify Selections
+					</Link>
+				</Box>
 				<Box sx={{ "&:hover": { color: palette.primary[100] } }}>
 					<Link
 						to='/'
