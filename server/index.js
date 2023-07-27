@@ -17,6 +17,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
 
+/* routes */
+app.use("kpi", kpiRoutes);
+
+
 /* node-postgres Setup */
 const PORT = process.env.PORT || 9000;
 
