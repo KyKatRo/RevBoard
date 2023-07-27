@@ -20,22 +20,16 @@ app.use(cors());
 /* node-postgres Setup */
 const PORT = process.env.PORT || 9000;
 
-const { Pool } = pg;
+console.log(`Port: ${PORT}`)
+console.log(`Port: ${process.env.POSTGRES_URL}`)
 
-const pool = new Pool({
-    connectionString: process.env.POSTGRES_URL,
-});
+const { Client } = pg
+const client = new Client({connectionString: process.env.POSTGRES_URL})
 
-pool.connect()
-    .then(async (client) => {
-        app.listen(PORT, () => console.log(`Server Port: ${PORT}`));
+await client.connect()
+const res = await client.query('SELECT $1::text as message', ['Hello world!'])
+console.log(res.rows[0].message) // Hello world!
+await client.end()
 
-        /* ADD DATA ONE TIME ONLY OR AS NEEDED */
-        // await client.query('TRUNCATE table_name'); // Replace with your table name
-        // await client.query('INSERT INTO kpis ...'); // Replace with your SQL commands
-        // await client.query('INSERT INTO products ...');
-        // await client.query('INSERT INTO transactions ...');
-    })
-    .catch((error) => console.log(`${error} did not connect`));
 
 
