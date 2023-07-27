@@ -58,3 +58,4 @@ const getKPI = async () => {
     return result.rows;
 };
 
+export { addDay, addMonth, addKPI, getKPI};
