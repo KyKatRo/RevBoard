@@ -1,10 +1,10 @@
 import express from 'express';
 import bodyParser from "body-parser";
-import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
 import helmet from "helmet";
 import morgan from "morgan";
+import pg from "pg";
 
 /* Config */
 dotenv.config();
@@ -17,4 +17,25 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
 
-/* Sequelize Setup */
+/* node-postgres Setup */
+const PORT = process.env.PORT || 9000;
+
+const { Pool } = pg;
+
+const pool = new Pool({
+    connectionString: process.env.POSTGRES_URL,
+});
+
+pool.connect()
+    .then(async (client) => {
+        app.listen(PORT, () => console.log(`Server Port: ${PORT}`));
+
+        /* ADD DATA ONE TIME ONLY OR AS NEEDED */
+        // await client.query('TRUNCATE table_name'); // Replace with your table name
+        // await client.query('INSERT INTO kpis ...'); // Replace with your SQL commands
+        // await client.query('INSERT INTO products ...');
+        // await client.query('INSERT INTO transactions ...');
+    })
+    .catch((error) => console.log(`${error} did not connect`));
+
+
