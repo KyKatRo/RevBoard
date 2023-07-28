@@ -1,6 +1,4 @@
-import { Pool } from "pg";
-
-const pool = new Pool();
+import pool from "../db.js";
 
 const createTables = async () => {
 	await pool.query(`
@@ -18,7 +16,7 @@ const createTables = async () => {
       nonOperationalExpenses NUMERIC
     );
 
-    CREATE TABLE IF NOT EXISTS KPI (
+    CREATE TABLE IF NOT EXISTS kpi (
       totalProfit NUMERIC,
       totalRevenue NUMERIC,
       totalExpenses NUMERIC,
