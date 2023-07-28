@@ -4,9 +4,8 @@ import cors from "cors";
 import dotenv from "dotenv";
 import helmet from "helmet";
 import morgan from "morgan";
-import pg from "pg";
-// import kpiRoutes from "./routes/kpi.js";
-// import KPI from "./models/KPI.js";
+import pool from "./db.js";
+import kpiRoutes from "./routes/kpi.js";
 
 /* Config */
 dotenv.config();
@@ -20,7 +19,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
 
 /* routes */
-// app.use("/kpi", kpiRoutes);
+app.use("/kpi", kpiRoutes);
 
 /* node-postgres Setup */
 const PORT = process.env.PORT || 9000;
@@ -28,10 +27,6 @@ const PORT = process.env.PORT || 9000;
 console.log(`Port: ${PORT}`);
 console.log(`Port: ${process.env.POSTGRES_URL}`);
 
-const { Client } = pg;
-const client = new Client({ connectionString: process.env.POSTGRES_URL });
-
-await client.connect();
-const res = await client.query("SELECT $1::text as message", ["Hello world!"]);
-console.log(res.rows[0].message); // Hello world!
-await client.end();
+const data = await pool.query("SELECT NOW()");
+console.log(data.rows);
+await pool.end();
