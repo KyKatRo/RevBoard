@@ -7,9 +7,9 @@ from dotenv import load_dotenv
 import os
 from datetime import date
 
-NUM_BUYERS = 10000
-NUM_PRODUCTS = 100
-NUM_ORDERS = 30000
+NUM_BUYERS = 10
+NUM_PRODUCTS = 10
+NUM_ORDERS = 30
 
 fake = Faker()
 
@@ -150,6 +150,7 @@ def create_database_entries():
         name = fake.name()
         email = fake.email()
         password = fake.password()
+        print(buyer_id, name, email, password)
         cur.execute("INSERT INTO Buyers (buyer_Id, buyer_name, email, password) VALUES (%s, %s, %s, %s)",
                     (buyer_id, name, email, password))
     
@@ -158,6 +159,7 @@ def create_database_entries():
         product_id = i
         product_name = fake.word()
         product_price = round(random.uniform(10.5, 200.5), 2)
+        print(product_id, product_name, product_price)
         cur.execute("INSERT INTO Products (product_Id, product_name, product_price) VALUES (%s, %s, %s)",
                     (product_id, product_name, product_price))
 
@@ -166,6 +168,7 @@ def create_database_entries():
         order_id = i
         order_date = fake.date_between(start_date=f"{current_year}-01-01", end_date=f"{current_year}-12-31")
         quantity = random.randint(1, 10)
+        print(order_id, order_date, quantity)
         cur.execute("INSERT INTO Orders (order_Id, order_date, quantity) VALUES (%s, %s, %s)",
                     (order_id, order_date, quantity))
 
@@ -174,6 +177,7 @@ def create_database_entries():
         revenue_id = i
         revenue_date = fake.date_between(start_date=f"{current_year}-01-01", end_date=f"{current_year}-12-31")
         total_revenue = round(random.uniform(10.5, 200.5), 2)
+        print(revenue_id, revenue_date, total_revenue)
         cur.execute("INSERT INTO Revenue (revenueId, date, totalRevenue) VALUES (%s, %s, %s)",
                     (revenue_id, revenue_date, total_revenue))
 
@@ -184,6 +188,7 @@ def create_database_entries():
         expense_category = fake.word()
         amount = round(random.uniform(10.5, 200.5), 2)
         operational_type = random.choice(['Operational', 'Non-Operational'])
+        print(expense_id, expense_date, expense_category, amount, operational_type)
         cur.execute(
             "INSERT INTO Expenses (expenseId, date, expenseCategory, amount, operationalType) VALUES "
             "(%s, %s, %s, %s, %s)", (expense_id, expense_date, expense_category, amount, operational_type))
@@ -194,6 +199,7 @@ def create_database_entries():
         campaign_start_date = fake.date_between(start_date=f"{current_year}-01-01", end_date=f"{current_year}-12-31")
         campaign_end_date = campaign_start_date + timedelta(days=random.randint(1, 30))
         target = random.randint(1, 10)
+        print(campaign_id, name, campaign_start_date, campaign_end_date, target)
         cur.execute(
             "INSERT INTO Campaigns (campaign_Id, name, campaignStartDate, campaignEndDate, target) VALUES (%s, %s, %s, %s, %s)",
             (campaign_id, name, campaign_start_date, campaign_end_date, target))
@@ -237,4 +243,4 @@ def create_database_entries():
 
 
 if __name__ == '__main__':
-    create_database_entries()
+    generate_relations()
