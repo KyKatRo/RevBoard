@@ -3,6 +3,9 @@ from psycopg2 import sql
 from faker import Faker
 import random
 from datetime import datetime, timedelta
+from dotenv import load_dotenv
+import os
+from datetime import date
 
 NUM_BUYERS = 10000
 NUM_PRODUCTS = 100
@@ -10,13 +13,25 @@ NUM_ORDERS = 30000
 
 fake = Faker()
 
-# Connect to your postgres DB
+# Load the environment variables from .env file
+load_dotenv()
+
+# Now you can access the values
+dbname = os.getenv("DBNAME")
+user = os.getenv("USER")
+password = os.getenv("PASSWORD")
+host = os.getenv("HOST")
+port = os.getenv("PORT")
+
+print(dbname, user, password, host, port)
+
+# Use the values to connect
 conn = psycopg2.connect(
-    dbname="main",
-    user="postgres",
-    password="fJNfRiQb4tXyEYi",
-    host="revboard.fly.dev",
-    port="5432"
+    dbname=dbname,
+    user=user,
+    password=password,
+    host=host,
+    port=port
 )
 
 
@@ -51,11 +66,82 @@ def test_database_query():
     conn.close()
 
 
+def generate_relations():
+    cur = conn.cursor()
+
+    tables = [
+        """
+        CREATE TABLE ordered_by (
+            buyer_ID INT,
+            order_ID INT,
+            PRIMARY KEY (order_ID),
+            FOREIGN KEY (buyer_ID) REFERENCES buyers(buyer_ID),
+            FOREIGN KEY (order_ID) REFERENCES orders(order_ID)
+        );
+        """,
+        """
+        CREATE TABLE earned_by (
+            order_ID INT,
+            revenue_ID INT,
+            PRIMARY KEY (revenue_ID),
+            FOREIGN KEY (order_ID) REFERENCES orders(order_ID),
+            FOREIGN KEY (revenue_ID) REFERENCES revenue(revenue_ID)
+        );
+        """,
+        """
+        CREATE TABLE bought (
+            order_ID INT,
+            product_ID INT,
+            PRIMARY KEY (order_ID, product_ID),
+            FOREIGN KEY (order_ID) REFERENCES orders(order_ID),
+            FOREIGN KEY (product_ID) REFERENCES products(product_ID)
+        );
+        """,
+        """
+        CREATE TABLE manufacturing_cost (
+            product_ID INT,
+            expense_ID INT,
+            PRIMARY KEY (expense_ID),
+            FOREIGN KEY (product_ID) REFERENCES products(product_ID),
+            FOREIGN KEY (expense_ID) REFERENCES expenses(expense_ID)
+        );
+        """,
+        """
+        CREATE TABLE generated_by (
+            order_ID INT,
+            campaign_ID INT,
+            PRIMARY KEY (order_ID, campaign_ID),
+            FOREIGN KEY (order_ID) REFERENCES orders(order_ID),
+            FOREIGN KEY (campaign_ID) REFERENCES campaigns(campaign_ID)
+        );
+        """,
+        """
+        CREATE TABLE campaign_cost (
+            campaign_ID INT,
+            expense_ID INT,
+            PRIMARY KEY (expense_ID),
+            FOREIGN KEY (campaign_ID) REFERENCES campaigns(campaign_ID),
+            FOREIGN KEY (expense_ID) REFERENCES expenses(expense_ID)
+        );
+        """
+    ]
+
+    for table in tables:
+        cur.execute(table)
+
+    # commit the transactions
+    conn.commit()
+
+    # close the cursor and connection
+    cur.close()
+    conn.close()
+
+
 def create_database_entries():
     # Open a cursor to perform database operations
     cur = conn.cursor()
 
-    cur.execute("INSERT INTO test (id, name, age, occupation) VALUES (%s, %s, %s, %s)", (4, 'Billy', 20, 'Student'))
+    current_year = date.today().year
 
     # Generate data for each table
     for i in range(NUM_BUYERS):
@@ -64,7 +150,7 @@ def create_database_entries():
         name = fake.name()
         email = fake.email()
         password = fake.password()
-        cur.execute("INSERT INTO Buyers (buyer_Id, name, email, password) VALUES (%s, %s, %s, %s)",
+        cur.execute("INSERT INTO Buyers (buyer_Id, buyer_name, email, password) VALUES (%s, %s, %s, %s)",
                     (buyer_id, name, email, password))
     
     for i in range(NUM_PRODUCTS):
@@ -78,37 +164,41 @@ def create_database_entries():
     for i in range(NUM_ORDERS):
         # Orders
         order_id = i
-        order_date = fake.date_between(start_date='-1y', end_date='today')
+        order_date = fake.date_between(start_date=f"{current_year}-01-01", end_date=f"{current_year}-12-31")
         quantity = random.randint(1, 10)
         cur.execute("INSERT INTO Orders (order_Id, order_date, quantity) VALUES (%s, %s, %s)",
                     (order_id, order_date, quantity))
-    
+
+    for i in range(100):
         # Revenue
         revenue_id = i
-        date = fake.date_between(start_date='-1y', end_date='today')
+        revenue_date = fake.date_between(start_date=f"{current_year}-01-01", end_date=f"{current_year}-12-31")
         total_revenue = round(random.uniform(10.5, 200.5), 2)
         cur.execute("INSERT INTO Revenue (revenueId, date, totalRevenue) VALUES (%s, %s, %s)",
-                    (revenue_id, date, total_revenue))
-    
+                    (revenue_id, revenue_date, total_revenue))
+
+
         # Expenses
         expense_id = i
-        date = fake.date_between(start_date='-1y', end_date='today')
+        expense_date = fake.date_between(start_date=f"{current_year}-01-01", end_date=f"{current_year}-12-31")
         expense_category = fake.word()
         amount = round(random.uniform(10.5, 200.5), 2)
         operational_type = random.choice(['Operational', 'Non-Operational'])
         cur.execute(
             "INSERT INTO Expenses (expenseId, date, expenseCategory, amount, operationalType) VALUES "
-            "(%s, %s, %s, %s, %s)", (expense_id, date, expense_category, amount, operational_type))
-    
+            "(%s, %s, %s, %s, %s)", (expense_id, expense_date, expense_category, amount, operational_type))
+
         # Campaigns
         campaign_id = i
         name = fake.word()
-        campaign_start_date = fake.date_between(start_date='-1y', end_date='today')
+        campaign_start_date = fake.date_between(start_date=f"{current_year}-01-01", end_date=f"{current_year}-12-31")
         campaign_end_date = campaign_start_date + timedelta(days=random.randint(1, 30))
         target = random.randint(1, 10)
         cur.execute(
             "INSERT INTO Campaigns (campaign_Id, name, campaignStartDate, campaignEndDate, target) VALUES (%s, %s, %s, %s, %s)",
             (campaign_id, name, campaign_start_date, campaign_end_date, target))
+
+        """
     
     # Create relationships
     for i in range(30000):
@@ -136,6 +226,7 @@ def create_database_entries():
         cur.execute("INSERT INTO campaign_cost (campaign_ID, expense_ID) VALUES (%s, %s)",
                     (random.randint(0, 29999), random.randint(0, 29999)))
 
+    """
 
     # Make the changes to the database persistent
     conn.commit()
@@ -146,4 +237,4 @@ def create_database_entries():
 
 
 if __name__ == '__main__':
-    test_database_query()
+    create_database_entries()
