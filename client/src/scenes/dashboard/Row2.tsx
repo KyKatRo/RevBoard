@@ -1,22 +1,22 @@
 import BoxHeader from "@/components/BoxHeader";
-import DashboardBox from "@/components/DashboardBox.tsx";
+import DashboardBox from "@/components/DashboardBox";
 import FlexBetween from "@/components/FlexBetween";
 import { useGetKpisQuery, useGetProductsQuery } from "@/state/api";
 import { Box, Typography, useTheme } from "@mui/material";
 import { useMemo } from "react";
 import {
-	CartesianGrid,
-	Cell,
-	Line,
-	LineChart,
-	Pie,
-	PieChart,
-	ResponsiveContainer,
-	Scatter,
-	ScatterChart,
 	Tooltip,
+	CartesianGrid,
+	LineChart,
+	ResponsiveContainer,
 	XAxis,
 	YAxis,
+	Line,
+	PieChart,
+	Pie,
+	Cell,
+	ScatterChart,
+	Scatter,
 	ZAxis,
 } from "recharts";
 
@@ -53,9 +53,9 @@ const Row2 = () => {
 	const productExpenseData = useMemo(() => {
 		return (
 			productData &&
-			productData.map(({ _id, price, expense }) => {
+			productData.map(({ id, price, expense }) => {
 				return {
-					id: _id,
+					id: id,
 					price: Number(price.replace("$", "")),
 					expense: Number(expense.replace("$", "")),
 				};

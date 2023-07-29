@@ -25,8 +25,6 @@ const Predictions = () => {
 		if (!kpiData) return [];
 		const monthData = kpiData[0].monthlyData;
 
-		console.log(monthData);
-
 		const formatted: Array<DataPoint> = monthData.map(
 			({ revenue }, i: number) => {
 				return [i, Number(revenue.replace("$", ""))];

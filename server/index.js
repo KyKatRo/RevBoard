@@ -7,6 +7,7 @@ import morgan from "morgan";
 import pool from "./db.js";
 import kpiRoutes from "./routes/kpi.js";
 import productRoutes from "./routes/product.js";
+import transactionRoutes from "./routes/transaction.js";
 
 /* Config */
 dotenv.config();
@@ -22,6 +23,7 @@ app.use(cors());
 /* routes */
 app.use("/kpi", kpiRoutes);
 app.use("/product", productRoutes);
+app.use("/transaction", transactionRoutes);
 
 // Test route
 app.get("/test", (req, res) => {
