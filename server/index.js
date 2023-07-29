@@ -6,6 +6,7 @@ import helmet from "helmet";
 import morgan from "morgan";
 import pool from "./db.js";
 import kpiRoutes from "./routes/kpi.js";
+import productRoutes from "./routes/product.js";
 
 /* Config */
 dotenv.config();
@@ -20,6 +21,7 @@ app.use(cors());
 
 /* routes */
 app.use("/kpi", kpiRoutes);
+app.use("/product", productRoutes);
 
 // Test route
 app.get("/test", (req, res) => {
@@ -37,15 +39,5 @@ app.listen(PORT, () => {
 // Test database connection
 const time = await pool.query("SELECT NOW()");
 console.log(time.rows);
-
-// Test database insertion; will insert every time server refreshes
-// const text = "INSERT INTO test(name, age, occupation) VALUES($1, $2, $3)";
-// const values = ["name", age, "occupation"];
-// await pool.query(text, values);
-
-// Test database selection, displays all data from test table
-const selectQuery = "SELECT * FROM test";
-const res = await pool.query(selectQuery);
-console.log(res.rows);
 
 await pool.end();
