@@ -1,21 +1,21 @@
 import BoxHeader from "@/components/BoxHeader";
-import DashboardBox from "@/components/DashboardBox.tsx";
-import { useGetKpisQuery } from "@/state/api.ts";
+import DashboardBox from "@/components/DashboardBox";
+import { useGetKpisQuery } from "@/state/api";
 import { useTheme } from "@mui/material";
 import { useMemo } from "react";
 import {
 	ResponsiveContainer,
-	AreaChart,
-	XAxis,
-	YAxis,
-	Tooltip,
-	Area,
-	Line,
 	CartesianGrid,
-	Legend,
-	LineChart,
+	AreaChart,
 	BarChart,
 	Bar,
+	LineChart,
+	XAxis,
+	YAxis,
+	Legend,
+	Line,
+	Tooltip,
+	Area,
 } from "recharts";
 
 const Row1 = () => {
@@ -28,7 +28,7 @@ const Row1 = () => {
 			data[0].monthlyData.map(({ month, revenue }) => {
 				return {
 					name: month.substring(0, 3),
-					revenue: revenue,
+					revenue: Number(revenue.replace("$", "")),
 				};
 			})
 		);
@@ -40,8 +40,8 @@ const Row1 = () => {
 			data[0].monthlyData.map(({ month, revenue, expenses }) => {
 				return {
 					name: month.substring(0, 3),
-					revenue: revenue,
-					expenses: expenses,
+					revenue: Number(revenue.replace("$", "")),
+					expenses: Number(expenses.replace("$", "")),
 				};
 			})
 		);
@@ -53,8 +53,11 @@ const Row1 = () => {
 			data[0].monthlyData.map(({ month, revenue, expenses }) => {
 				return {
 					name: month.substring(0, 3),
-					revenue: revenue,
-					profit: (revenue - expenses).toFixed(2),
+					revenue: Number(revenue.replace("$", "")),
+					profit: (
+						Number(revenue.replace("$", "")) -
+						Number(expenses.replace("$", ""))
+					).toFixed(2),
 				};
 			})
 		);
@@ -157,6 +160,8 @@ const Row1 = () => {
 				/>
 				<ResponsiveContainer width='100%' height='100%'>
 					<LineChart
+						width={500}
+						height={400}
 						data={revenueProfit}
 						margin={{
 							top: 20,
@@ -168,7 +173,7 @@ const Row1 = () => {
 						<CartesianGrid
 							vertical={false}
 							stroke={palette.grey[800]}
-						></CartesianGrid>
+						/>
 						<XAxis
 							dataKey='name'
 							tickLine={false}
@@ -190,8 +195,10 @@ const Row1 = () => {
 						<Tooltip />
 						<Legend
 							height={20}
-							wrapperStyle={{ margin: "0 0 10px 0" }}
-						></Legend>
+							wrapperStyle={{
+								margin: "0 0 10px 0",
+							}}
+						/>
 						<Line
 							yAxisId='left'
 							type='monotone'
