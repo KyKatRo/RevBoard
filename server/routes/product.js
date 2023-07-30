@@ -4,7 +4,7 @@ import pool from "../db.js";
 const router = express.Router();
 
 const query =
-	"SELECT p.product_id, p.product_price, e.expense_expense_amount FROM products p, expenses e, manufacturing_cost mc WHERE p.product_id = mc.product_id and mc.expense_id = e.expense_id; ";
+	"SELECT p.product_id, p.product_price, e.expense_amount FROM products p, expenses e, manufacturing_cost mc WHERE p.product_id = mc.product_id and mc.expense_id = e.expense_id; ";
 
 router.get("/products", async (req, res) => {
 	try {
