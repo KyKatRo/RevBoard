@@ -1,7 +1,6 @@
 import BoxHeader from "@/components/BoxHeader";
 import DashboardBox from "@/components/DashboardBox";
-import { useGetRevenuesQuery } from "@/state/api";
-import { useGetExpensesQuery } from "@/state/api";
+import { useGetRevenuesQuery, useGetExpensesQuery } from "@/state/api";
 import { useTheme } from "@mui/material";
 import { useMemo } from "react";
 import {
