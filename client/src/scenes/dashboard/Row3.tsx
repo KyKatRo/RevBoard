@@ -4,7 +4,7 @@ import FlexBetween from "@/components/FlexBetween";
 import {
 	useGetKpisQuery,
 	useGetProductsQuery,
-	useGetTransactionsQuery,
+	useGetOrdersQuery,
 } from "@/state/api";
 import { Box, Typography, useTheme } from "@mui/material";
 import { DataGrid, GridCellParams } from "@mui/x-data-grid";
@@ -17,7 +17,7 @@ const Row3 = () => {
 
 	const { data: kpiData } = useGetKpisQuery();
 	const { data: productData } = useGetProductsQuery();
-	const { data: transactionData } = useGetTransactionsQuery();
+	const { data: orderData } = useGetOrdersQuery();
 
 	const pieChartData = useMemo(() => {
 		if (kpiData) {
@@ -41,49 +41,56 @@ const Row3 = () => {
 		}
 	}, [kpiData]);
 
+	console.log(productData);
+
 	const productColumns = [
 		{
 			field: "product_id",
 			headerName: "id",
-			flex: 1,
+			flex: 0.5,
+		},
+		{
+			field: "product_name",
+			headerName: "Name",
+			flex: 0.7,
+			renderCell: (params: GridCellParams) => `${params.value}`,
 		},
 		{
 			field: "expense_amount",
 			headerName: "Expense",
-			flex: 0.5,
+			flex: 0.6,
 			renderCell: (params: GridCellParams) => `${Number(params.value)}`,
 		},
 		{
 			field: "product_price",
 			headerName: "Price",
-			flex: 0.5,
+			flex: 0.4,
 			renderCell: (params: GridCellParams) => `${Number(params.value)}`,
 		},
 	];
 
-	const transactionColumns = [
+	const orderColumns = [
 		{
-			field: "id",
+			field: "order_id",
 			headerName: "id",
 			flex: 1,
 		},
 		{
-			field: "buyer",
+			field: "buyer_name",
 			headerName: "Buyer",
 			flex: 0.67,
 		},
+		// {
+		// 	field: "amount",
+		// 	headerName: "Amount",
+		// 	flex: 0.35,
+		// 	renderCell: (params: GridCellParams) => `${params.value}`,
+		// },
 		{
-			field: "amount",
-			headerName: "Amount",
-			flex: 0.35,
-			renderCell: (params: GridCellParams) => `${params.value}`,
-		},
-		{
-			field: "productIds",
+			field: "quantity",
 			headerName: "Count",
 			flex: 0.1,
-			renderCell: (params: GridCellParams) =>
-				(params.value as Array<string>).length,
+			renderCell: (params: GridCellParams) => `${Number(params.value)}`,
 		},
 	];
 
@@ -127,7 +134,7 @@ const Row3 = () => {
 			<DashboardBox gridArea='h'>
 				<BoxHeader
 					title='Recent Orders'
-					sideText={`${transactionData?.length} latest transactions`}
+					sideText={`${orderData?.length} latest orders`}
 				/>
 				<Box
 					mt='1rem'
@@ -153,16 +160,14 @@ const Row3 = () => {
 						columnHeaderHeight={25}
 						rowHeight={35}
 						hideFooter={true}
-						rows={transactionData || []}
-						columns={transactionColumns}
+						rows={orderData || []}
+						columns={orderColumns}
+						getRowId={(row) => row.order_id}
 					/>
 				</Box>
 			</DashboardBox>
 			<DashboardBox gridArea='i'>
-				<BoxHeader
-					title='Expense Breakdown By Category'
-					sideText='+4%'
-				/>
+				<BoxHeader title='Expense Breakdown By Category' sideText='' />
 				<FlexBetween
 					mt='0.5rem'
 					gap='0.5rem'
@@ -196,7 +201,7 @@ const Row3 = () => {
 			<DashboardBox gridArea='j'>
 				<BoxHeader
 					title='Overall Summary and Explanation Data'
-					sideText='+15%'
+					sideText=''
 				/>
 				<Box
 					height='15px'

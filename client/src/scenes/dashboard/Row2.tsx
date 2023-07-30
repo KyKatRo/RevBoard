@@ -51,13 +51,16 @@ const Row2 = () => {
 	const productExpenseData = useMemo(() => {
 		return (
 			productData &&
-			productData.map(({ id, product_price, expense_amount }) => {
-				return {
-					id: id,
-					price: Number(product_price),
-					expense: Number(expense_amount),
-				};
-			})
+			productData.map(
+				({ id, product_name, product_price, expense_amount }) => {
+					return {
+						id: id,
+						name: product_name,
+						price: Number(product_price),
+						expense: Number(expense_amount),
+					};
+				}
+			)
 		);
 	}, [productData]);
 
@@ -66,8 +69,9 @@ const Row2 = () => {
 			<DashboardBox gridArea='d'>
 				<BoxHeader
 					title='Operational vs Non-Operational Expenses'
-					sideText='+4%'
+					sideText=''
 				/>
+				<br />
 				<ResponsiveContainer width='100%' height='100%'>
 					<LineChart
 						data={operationalExpenses}
@@ -118,7 +122,8 @@ const Row2 = () => {
 				</ResponsiveContainer>
 			</DashboardBox>
 			<DashboardBox gridArea='e'>
-				<BoxHeader title='Campaigns and Targets' sideText='+4%' />
+				<BoxHeader title='Campaigns and Targets' sideText='' />
+
 				<FlexBetween mt='0.25rem' gap='1.5rem' pr='1rem'>
 					<PieChart
 						width={110}
@@ -174,7 +179,7 @@ const Row2 = () => {
 				</FlexBetween>
 			</DashboardBox>
 			<DashboardBox gridArea='f'>
-				<BoxHeader title='Product Prices vs Expenses' sideText='+4%' />
+				<BoxHeader title='Product Prices vs Expenses' sideText='' />
 				<ResponsiveContainer width='100%' height='100%'>
 					<ScatterChart
 						margin={{

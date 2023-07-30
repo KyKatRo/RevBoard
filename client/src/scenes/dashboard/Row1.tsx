@@ -68,11 +68,8 @@ const Row1 = () => {
 	return (
 		<>
 			<DashboardBox gridArea='a'>
-				<BoxHeader
-					title='Revenue and Expenses'
-					subtitle='top line represents revenue, bottom line represents expenses'
-					sideText='+4%'
-				/>
+				<BoxHeader title='Revenue and Expenses' sideText='' />
+				<br />
 				<ResponsiveContainer width='100%' height='100%'>
 					<AreaChart
 						width={500}
@@ -113,12 +110,12 @@ const Row1 = () => {
 							>
 								<stop
 									offset='5%'
-									stopColor={palette.primary[300]}
+									stopColor={palette.tertiary[500]}
 									stopOpacity={0.5}
 								/>
 								<stop
 									offset='95%'
-									stopColor={palette.primary[300]}
+									stopColor={palette.tertiary[500]}
 									stopOpacity={0}
 								/>
 							</linearGradient>
@@ -134,6 +131,12 @@ const Row1 = () => {
 							style={{ fontSize: "10px" }}
 						/>
 						<Tooltip />
+						<Legend
+							height={20}
+							wrapperStyle={{
+								margin: "0 0 10px 0",
+							}}
+						/>
 						<Area
 							type='monotone'
 							dataKey='revenue'
@@ -146,7 +149,7 @@ const Row1 = () => {
 							type='monotone'
 							dataKey='expenses'
 							dot={true}
-							stroke={palette.primary.main}
+							stroke={palette.tertiary[500]}
 							fillOpacity={1}
 							fill='url(#colorExpenses)'
 						/>
@@ -154,11 +157,8 @@ const Row1 = () => {
 				</ResponsiveContainer>
 			</DashboardBox>
 			<DashboardBox gridArea='b'>
-				<BoxHeader
-					title='Profit and Revenue'
-					subtitle='top line represents revenue, bottom line represents expenses'
-					sideText='+4%'
-				/>
+				<BoxHeader title='Profit and Revenue' sideText='' />
+				<br />
 				<ResponsiveContainer width='100%' height='100%'>
 					<LineChart
 						width={500}
@@ -201,26 +201,23 @@ const Row1 = () => {
 							}}
 						/>
 						<Line
-							yAxisId='left'
-							type='monotone'
-							dataKey='profit'
-							stroke={palette.tertiary[500]}
-						/>
-						<Line
 							yAxisId='right'
 							type='monotone'
 							dataKey='revenue'
 							stroke={palette.primary.main}
 						/>
+						<Line
+							yAxisId='left'
+							type='monotone'
+							dataKey='profit'
+							stroke={palette.tertiary[500]}
+						/>
 					</LineChart>
 				</ResponsiveContainer>
 			</DashboardBox>
 			<DashboardBox gridArea='c'>
-				<BoxHeader
-					title='Revenue Month by Month'
-					subtitle='graph representing the revenue month by month'
-					sideText='+4%'
-				/>
+				<BoxHeader title='Revenue Month by Month' sideText='' />
+				<br />
 				<ResponsiveContainer width='100%' height='100%'>
 					<BarChart
 						width={500}

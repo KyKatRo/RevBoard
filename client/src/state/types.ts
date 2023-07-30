@@ -84,6 +84,7 @@ export interface GetOrdersResponse {
 
 export interface GetProductsResponse {
 	product_id: number;
+	product_name: string;
 	product_price: number;
 	expense_amount: number;
 }
