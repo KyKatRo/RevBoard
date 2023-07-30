@@ -77,7 +77,7 @@ const Row2 = () => {
 						data={operationalExpenses}
 						margin={{
 							top: 20,
-							right: 0,
+							right: 25,
 							left: -10,
 							bottom: 55,
 						}}
@@ -92,28 +92,17 @@ const Row2 = () => {
 							style={{ fontSize: "10px" }}
 						/>
 						<YAxis
-							yAxisId='left'
-							orientation='left'
-							tickLine={false}
-							axisLine={false}
-							style={{ fontSize: "10px" }}
-						/>
-						<YAxis
-							yAxisId='right'
-							orientation='right'
 							tickLine={false}
 							axisLine={false}
 							style={{ fontSize: "10px" }}
 						/>
 						<Tooltip />
 						<Line
-							yAxisId='left'
 							type='monotone'
 							dataKey='Non Operational Expenses'
 							stroke={palette.tertiary[500]}
 						/>
 						<Line
-							yAxisId='right'
 							type='monotone'
 							dataKey='Operational Expenses'
 							stroke={palette.primary.main}
@@ -123,7 +112,6 @@ const Row2 = () => {
 			</DashboardBox>
 			<DashboardBox gridArea='e'>
 				<BoxHeader title='Campaigns and Targets' sideText='' />
-
 				<FlexBetween mt='0.25rem' gap='1.5rem' pr='1rem'>
 					<PieChart
 						width={110}
