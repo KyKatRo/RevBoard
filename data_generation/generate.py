@@ -5,11 +5,13 @@ import random
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
 import os
+import random
 from datetime import date
 
 NUM_BUYERS = 10
 NUM_PRODUCTS = 10
 NUM_ORDERS = 30
+NUM_CAMPAIGNS = 6
 
 fake = Faker()
 
@@ -137,7 +139,89 @@ def generate_relations():
     conn.close()
 
 
+def clear_table(cursor, table_name):
+    try:
+        cursor.execute(f"DELETE FROM {table_name}")
+        print(f"Cleared {table_name} table.")
+    except Exception as e:
+        print(f"Error clearing {table_name} table: {e}")
+
+
+def clear_all_tables():
+    try:
+        cursor = conn.cursor()
+
+        tables_to_clear = [
+            'Ordered_by',
+            'Earned_by',
+            'Bought',
+            'Manufacturing_cost',
+            'Generated_by',
+            'campaign_cost',
+            'Buyers',
+            'Products',
+            'Orders',
+            'Revenue',
+            'Expenses',
+            'Campaigns',
+        ]
+
+        for table in tables_to_clear:
+            clear_table(cursor, table)
+
+        conn.commit()
+        conn.close()
+    except Exception as e:
+        print(f"Error while clearing tables: {e}")
+
+
+def generate_fake_product_name():
+    prefixes = ['Tech', 'Glo', 'Smart', 'Eco', 'Pro', 'Ultra', 'Max', 'Nano', 'i', 'Aqua']
+    suffixes = ['tron', 'gen', 'ify', 'lite', 'X', 'Plus', 'Vista', 'Core', 'Duo', 'Zoom']
+    words = ['Widget', 'Gadget', 'Device', 'Tool', 'Appliance', 'Machine', 'System']
+
+    # Choose a random prefix, word, and suffix to combine into a product name
+    prefix = random.choice(prefixes)
+    word = random.choice(words)
+    suffix = random.choice(suffixes)
+
+    # Combine the parts to form the final product name
+    product_name = f"{prefix}{word}{suffix}"
+
+    return product_name
+
+
+def generate_unique_product_names(count):
+    unique_names = set()
+
+    while len(unique_names) < count:
+        fake_product_name = generate_fake_product_name()
+        unique_names.add(fake_product_name)
+
+    return list(unique_names)
+
+
 def create_database_entries():
+    clear_all_tables()
+
+    # Now you can access the values
+    dbname = os.getenv("DBNAME")
+    user = os.getenv("USER")
+    password = os.getenv("PASSWORD")
+    host = os.getenv("HOST")
+    port = os.getenv("PORT")
+
+    print(dbname, user, password, host, port)
+
+    # Use the values to connect
+    conn = psycopg2.connect(
+        dbname=dbname,
+        user=user,
+        password=password,
+        host=host,
+        port=port
+    )
+
     # Open a cursor to perform database operations
     cur = conn.cursor()
 
@@ -149,90 +233,105 @@ def create_database_entries():
         buyer_id = i
         name = fake.name()
         email = fake.email()
-        password = fake.password()
-        print(buyer_id, name, email, password)
+        user_password = fake.password()
         cur.execute("INSERT INTO Buyers (buyer_Id, buyer_name, email, password) VALUES (%s, %s, %s, %s)",
-                    (buyer_id, name, email, password))
-    
+                    (buyer_id, name, email, user_password))
+
+    unique_product_names = generate_unique_product_names(NUM_PRODUCTS)
+
+    price_log = [None]*NUM_PRODUCTS
+
+    print("Creating Product Entries")
     for i in range(NUM_PRODUCTS):
         # Products
         product_id = i
-        product_name = fake.word()
+        product_name = unique_product_names[i]
         product_price = round(random.uniform(10.5, 200.5), 2)
-        print(product_id, product_name, product_price)
+        price_log[i] = product_price
         cur.execute("INSERT INTO Products (product_Id, product_name, product_price) VALUES (%s, %s, %s)",
                     (product_id, product_name, product_price))
 
-    for i in range(NUM_ORDERS):
-        # Orders
-        order_id = i
-        order_date = fake.date_between(start_date=f"{current_year}-01-01", end_date=f"{current_year}-12-31")
-        quantity = random.randint(1, 10)
-        print(order_id, order_date, quantity)
-        cur.execute("INSERT INTO Orders (order_Id, order_date, quantity) VALUES (%s, %s, %s)",
-                    (order_id, order_date, quantity))
-
-    for i in range(100):
-        # Revenue
-        revenue_id = i
-        revenue_date = fake.date_between(start_date=f"{current_year}-01-01", end_date=f"{current_year}-12-31")
-        total_revenue = round(random.uniform(10.5, 200.5), 2)
-        print(revenue_id, revenue_date, total_revenue)
-        cur.execute("INSERT INTO Revenue (revenueId, date, totalRevenue) VALUES (%s, %s, %s)",
-                    (revenue_id, revenue_date, total_revenue))
-
-
         # Expenses
         expense_id = i
-        expense_date = fake.date_between(start_date=f"{current_year}-01-01", end_date=f"{current_year}-12-31")
-        expense_category = fake.word()
-        amount = round(random.uniform(10.5, 200.5), 2)
-        operational_type = random.choice(['Operational', 'Non-Operational'])
-        print(expense_id, expense_date, expense_category, amount, operational_type)
+        expense_date = fake.date_between(start_date=date(current_year, 1, 1), end_date=date(current_year, 12, 31))
+        expense_category = "manufacturing_cost"
+        amount = round((product_price/2) * random.randint(1000, 10000), 2)
+        operational_type = 'non-operational'
         cur.execute(
-            "INSERT INTO Expenses (expenseId, date, expenseCategory, amount, operationalType) VALUES "
+            "INSERT INTO Expenses (expense_Id, expense_date, expenseCategory, amount, operationalType) VALUES "
             "(%s, %s, %s, %s, %s)", (expense_id, expense_date, expense_category, amount, operational_type))
 
+        # Manufacturing_cost
+        cur.execute("INSERT INTO Manufacturing_cost (product_ID, expense_ID) VALUES (%s, %s)",
+                    (i, i))
+
+    campaign_history = [None]*NUM_CAMPAIGNS
+
+    print("Creating Campaign Entries")
+    for i in range(NUM_CAMPAIGNS):
         # Campaigns
         campaign_id = i
         name = fake.word()
-        campaign_start_date = fake.date_between(start_date=f"{current_year}-01-01", end_date=f"{current_year}-12-31")
+        campaign_start_date = fake.date_between(start_date=date(current_year, 1, 1),
+                                                end_date=date(current_year, 12, 31))
         campaign_end_date = campaign_start_date + timedelta(days=random.randint(1, 30))
-        target = random.randint(1, 10)
-        print(campaign_id, name, campaign_start_date, campaign_end_date, target)
-        cur.execute(
-            "INSERT INTO Campaigns (campaign_Id, name, campaignStartDate, campaignEndDate, target) VALUES (%s, %s, %s, %s, %s)",
-            (campaign_id, name, campaign_start_date, campaign_end_date, target))
 
-        """
-    
-    # Create relationships
-    for i in range(30000):
-        # Ordered_by
-        cur.execute("INSERT INTO Ordered_by (buyer_ID, order_ID) VALUES (%s, %s)",
-                    (random.randint(0, NUM_BUYERS-1), random.randint(0, NUM_ORDERS-1)))
-    
-        # Earned_by
-        cur.execute("INSERT INTO Earned_by (order_ID, revenue_ID) VALUES (%s, %s)",
-                    (random.randint(0, NUM_ORDERS-1), random.randint(0, NUM_ORDERS-1)))
-    
-        # Bought
-        cur.execute("INSERT INTO Bought (order_ID, product_ID) VALUES (%s, %s)",
-                    (random.randint(0, 29999), random.randint(0, 29999)))
-    
-        # Manufacturing_cost
-        cur.execute("INSERT INTO Manufacturing_cost (product_ID, expense_ID) VALUES (%s, %s)",
-                    (random.randint(0, 29999), random.randint(0, 29999)))
-    
-        # Generated_by
-        cur.execute("INSERT INTO Generated_by (order_ID, campaign_ID) VALUES (%s, %s)",
-                    (random.randint(0, 29999), random.randint(0, 29999)))
-    
+        campaign_history[i] = (i, campaign_start_date, campaign_end_date)
+
+        target = random.randint(1000, 100000)
+        cur.execute(
+            "INSERT INTO Campaigns (campaign_Id, campaign_name, campaignStartDate, campaignEndDate, target) VALUES "
+            "(%s, %s, %s, %s, %s)", (campaign_id, name, campaign_start_date, campaign_end_date, target))
+
+        # Expenses
+        expense_id = i+NUM_PRODUCTS
+        expense_date = campaign_start_date
+        expense_category = 'campaign_cost'
+        amount = round(random.uniform(10000, 100000), 2)
+        operational_type = 'operational'
+        cur.execute(
+            "INSERT INTO Expenses (expense_Id, expense_date, expenseCategory, amount, operationalType) VALUES "
+            "(%s, %s, %s, %s, %s)", (expense_id, expense_date, expense_category, amount, operational_type))
+
         # campaign_cost
         cur.execute("INSERT INTO campaign_cost (campaign_ID, expense_ID) VALUES (%s, %s)",
-                    (random.randint(0, 29999), random.randint(0, 29999)))
+                    (i, i))
 
-    """
+    print("Creating Order Entries")
+    for i in range(NUM_ORDERS):
+        # Orders
+        order_id = i
+        order_date = fake.date_between(start_date=date(current_year, 1, 1), end_date=date(current_year, 12, 31))
+        quantity = random.randint(1, 10)
+        cur.execute("INSERT INTO Orders (order_Id, order_date, quantity) VALUES (%s, %s, %s)",
+                    (order_id, order_date, quantity))
+
+        # Ordered_by
+        cur.execute("INSERT INTO Ordered_by (buyer_ID, order_ID) VALUES (%s, %s)",
+                    (random.randint(0, NUM_BUYERS-1), i))
+
+        product_selection = random.randint(0, NUM_PRODUCTS-1)
+        # Bought
+        cur.execute("INSERT INTO Bought (order_ID, product_ID) VALUES (%s, %s)",
+                    (i, product_selection))
+
+        # Revenue
+        revenue_id = i
+        revenue_date = order_date
+        total_revenue = quantity * price_log[product_selection]
+        cur.execute("INSERT INTO Revenue (revenue_Id, revenue_date, totalRevenue) VALUES (%s, %s, %s)",
+                    (revenue_id, revenue_date, total_revenue))
+
+        # Earned_by
+        cur.execute("INSERT INTO Earned_by (order_ID, revenue_ID) VALUES (%s, %s)",
+                    (i, i))
+
+        for num, campaign_start, campaign_end in campaign_history:
+            if random.randint(0, 1) and campaign_start <= order_date <= campaign_end:
+                # Campaign_orders
+                cur.execute("INSERT INTO Generated_by (order_ID, campaign_ID) VALUES (%s, %s)",
+                            (i, num))
+                break
 
     # Make the changes to the database persistent
     conn.commit()
@@ -243,4 +342,4 @@ def create_database_entries():
 
 
 if __name__ == '__main__':
-    generate_relations()
+    create_database_entries()
