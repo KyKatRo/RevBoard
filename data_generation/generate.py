@@ -8,10 +8,10 @@ import os
 import random
 from datetime import date
 
-NUM_BUYERS = 10
-NUM_PRODUCTS = 10
-NUM_ORDERS = 30
-NUM_CAMPAIGNS = 6
+NUM_BUYERS = 10000
+NUM_PRODUCTS = 100
+NUM_ORDERS = 30000
+NUM_CAMPAIGNS = 10
 
 fake = Faker()
 
@@ -204,15 +204,6 @@ def generate_unique_product_names(count):
 def create_database_entries():
     clear_all_tables()
 
-    # Now you can access the values
-    dbname = os.getenv("DBNAME")
-    user = os.getenv("USER")
-    password = os.getenv("PASSWORD")
-    host = os.getenv("HOST")
-    port = os.getenv("PORT")
-
-    print(dbname, user, password, host, port)
-
     # Use the values to connect
     conn = psycopg2.connect(
         dbname=dbname,
@@ -228,7 +219,10 @@ def create_database_entries():
     current_year = date.today().year
 
     # Generate data for each table
+    print("Creating Buyer Entries")
     for i in range(NUM_BUYERS):
+        if i % 100 == 0:
+            print(f"Created {i} buyer entries so far.")
         # Buyers
         buyer_id = i
         name = fake.name()
@@ -243,6 +237,8 @@ def create_database_entries():
 
     print("Creating Product Entries")
     for i in range(NUM_PRODUCTS):
+        if i % 100 == 0:
+            print(f"Created {i} product entries so far.")
         # Products
         product_id = i
         product_name = unique_product_names[i]
@@ -269,6 +265,8 @@ def create_database_entries():
 
     print("Creating Campaign Entries")
     for i in range(NUM_CAMPAIGNS):
+        if i % 100 == 0:
+            print(f"Created {i} campaign entries so far.")
         # Campaigns
         campaign_id = i
         name = fake.word()
@@ -299,6 +297,8 @@ def create_database_entries():
 
     print("Creating Order Entries")
     for i in range(NUM_ORDERS):
+        if i % 100 == 0:
+            print(f"Created {i} order entries so far.")
         # Orders
         order_id = i
         order_date = fake.date_between(start_date=date(current_year, 1, 1), end_date=date(current_year, 12, 31))
