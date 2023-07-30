@@ -43,21 +43,21 @@ const Row3 = () => {
 
 	const productColumns = [
 		{
-			field: "id",
+			field: "product_id",
 			headerName: "id",
 			flex: 1,
 		},
 		{
-			field: "expense",
+			field: "expense_amount",
 			headerName: "Expense",
 			flex: 0.5,
-			renderCell: (params: GridCellParams) => `${params.value}`,
+			renderCell: (params: GridCellParams) => `${Number(params.value)}`,
 		},
 		{
-			field: "price",
+			field: "product_price",
 			headerName: "Price",
 			flex: 0.5,
-			renderCell: (params: GridCellParams) => `${params.value}`,
+			renderCell: (params: GridCellParams) => `${Number(params.value)}`,
 		},
 	];
 
@@ -120,6 +120,7 @@ const Row3 = () => {
 						hideFooter={true}
 						rows={productData || []}
 						columns={productColumns}
+						getRowId={(row) => row.product_id}
 					/>
 				</Box>
 			</DashboardBox>

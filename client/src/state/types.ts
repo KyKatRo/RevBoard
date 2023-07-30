@@ -81,3 +81,9 @@ export interface GetOrdersResponse {
 	cost: number;
 	quantity: number;
 }
+
+export interface GetProductsResponse {
+	product_id: number;
+	product_price: number;
+	expense_amount: number;
+}

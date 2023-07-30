@@ -6,7 +6,7 @@ const router = express.Router();
 const expensesQuery = `SELECT
                                     EXTRACT(YEAR FROM "expense_date") AS Year,
                                     EXTRACT(MONTH FROM "expense_date") AS Month,
-                                    SUM(amount) AS Amount
+                                    SUM(expense_amount) AS Amount
                                 FROM expenses
                                 GROUP BY
                                     EXTRACT(YEAR FROM "expense_date"),
@@ -18,8 +18,8 @@ const expensesQuery = `SELECT
 const expensesByTypeQuery = `SELECT
                                         EXTRACT(YEAR FROM "expense_date") AS Year,
                                         EXTRACT(MONTH FROM "expense_date") AS Month,
-                                        SUM(CASE WHEN "operationaltype" = 'operational' THEN "amount" END) AS OperationalExpense,
-                                        SUM(CASE WHEN "operationaltype" = 'non-operational' THEN "amount" END) AS NonOperationalExpense
+                                        SUM(CASE WHEN "operationaltype" = 'operational' THEN "expense_amount" END) AS OperationalExpense,
+                                        SUM(CASE WHEN "operationaltype" = 'non-operational' THEN "expense_amount" END) AS NonOperationalExpense
                                     FROM expenses
                                     GROUP BY
                                         EXTRACT(YEAR FROM "expense_date"),

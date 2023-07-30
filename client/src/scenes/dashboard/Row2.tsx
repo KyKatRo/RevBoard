@@ -51,11 +51,11 @@ const Row2 = () => {
 	const productExpenseData = useMemo(() => {
 		return (
 			productData &&
-			productData.map(({ id, price, expense }) => {
+			productData.map(({ id, product_price, expense_amount }) => {
 				return {
 					id: id,
-					price: Number(price.replace("$", "")),
-					expense: Number(expense.replace("$", "")),
+					price: Number(product_price),
+					expense: Number(expense_amount),
 				};
 			})
 		);
