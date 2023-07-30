@@ -55,3 +55,9 @@ export interface GetTransactionsResponse {
 	createdAt: string;
 	updatedAt: string;
 }
+
+export interface GetRevenuesResponse {
+	year: number;
+	month: number;
+	totalrevenue: number;
+}

@@ -8,6 +8,7 @@ import pool from "./db.js";
 import kpiRoutes from "./routes/kpi.js";
 import productRoutes from "./routes/product.js";
 import transactionRoutes from "./routes/transaction.js";
+import revenueRoutes from "./routes/revenue.js";
 
 /* Config */
 dotenv.config();
@@ -24,6 +25,7 @@ app.use(cors());
 app.use("/kpi", kpiRoutes);
 app.use("/product", productRoutes);
 app.use("/transaction", transactionRoutes);
+app.use("/revenue", revenueRoutes);
 
 // Test route
 app.get("/test", (req, res) => {
@@ -42,4 +44,4 @@ app.listen(PORT, () => {
 const time = await pool.query("SELECT NOW()");
 console.log(time.rows);
 
-await pool.end();
+// await pool.end();
