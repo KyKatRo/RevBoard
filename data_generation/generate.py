@@ -202,8 +202,6 @@ def generate_unique_product_names(count):
 
 
 def create_database_entries():
-    clear_all_tables()
-
     # Use the values to connect
     conn = psycopg2.connect(
         dbname=dbname,
@@ -251,7 +249,7 @@ def create_database_entries():
         expense_id = i
         expense_date = fake.date_between(start_date=date(current_year, 1, 1), end_date=date(current_year, 12, 31))
         expense_category = "manufacturing_cost"
-        amount = round((product_price/2) * random.randint(100, 1000), 2)
+        amount = round((product_price/2) * random.randint(300, 3000), 2)
         operational_type = 'non-operational'
         cur.execute(
             "INSERT INTO Expenses (expense_Id, expense_date, expenseCategory, amount, operationalType) VALUES "
