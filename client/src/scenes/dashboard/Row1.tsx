@@ -1,7 +1,7 @@
 import BoxHeader from "@/components/BoxHeader";
 import DashboardBox from "@/components/DashboardBox";
-import { useGetKpisQuery } from "@/state/api";
 import { useGetRevenuesQuery } from "@/state/api";
+import { useGetExpensesQuery } from "@/state/api";
 import { useTheme } from "@mui/material";
 import { useMemo } from "react";
 import {
@@ -21,15 +21,15 @@ import {
 
 const Row1 = () => {
 	const { palette } = useTheme();
-	const { data: kpiData } = useGetKpisQuery();
 	const { data: revenueData } = useGetRevenuesQuery();
+	const { data: expenseData } = useGetExpensesQuery();
 
 	const revenue = useMemo(() => {
 		return (
 			revenueData &&
 			revenueData.map(({ month, totalrevenue }) => {
 				return {
-					name: Number(month),
+					name: month,
 					revenue: Number(totalrevenue),
 				};
 			})
@@ -38,32 +38,33 @@ const Row1 = () => {
 
 	const revenueExpenses = useMemo(() => {
 		return (
-			kpiData &&
-			kpiData[0].monthlyData.map(({ month, revenue, expenses }) => {
+			revenueData &&
+			expenseData &&
+			revenueData.map(({ month, totalrevenue }, index) => {
 				return {
-					name: month.substring(0, 3),
-					revenue: Number(revenue.replace("$", "")),
-					expenses: Number(expenses.replace("$", "")),
+					name: month,
+					revenue: Number(totalrevenue),
+					expenses: Number(expenseData[index].amount),
 				};
 			})
 		);
-	}, [kpiData]);
+	}, [revenueData, expenseData]);
 
 	const revenueProfit = useMemo(() => {
 		return (
-			kpiData &&
-			kpiData[0].monthlyData.map(({ month, revenue, expenses }) => {
+			revenueData &&
+			expenseData &&
+			revenueData.map(({ month, totalrevenue }, index) => {
 				return {
-					name: month.substring(0, 3),
-					revenue: Number(revenue.replace("$", "")),
+					name: month,
+					revenue: Number(totalrevenue),
 					profit: (
-						Number(revenue.replace("$", "")) -
-						Number(expenses.replace("$", ""))
+						Number(totalrevenue) - Number(expenseData[index].amount)
 					).toFixed(2),
 				};
 			})
 		);
-	}, [kpiData]);
+	}, [revenueData, expenseData]);
 
 	return (
 		<>
@@ -132,7 +133,6 @@ const Row1 = () => {
 							tickLine={false}
 							axisLine={{ strokeWidth: "0" }}
 							style={{ fontSize: "10px" }}
-							domain={[8000, 23000]}
 						/>
 						<Tooltip />
 						<Area

@@ -9,6 +9,8 @@ import kpiRoutes from "./routes/kpi.js";
 import productRoutes from "./routes/product.js";
 import transactionRoutes from "./routes/transaction.js";
 import revenueRoutes from "./routes/revenue.js";
+import expenseRoutes from "./routes/expense.js";
+import orderRoutes from "./routes/order.js";
 
 /* Config */
 dotenv.config();
@@ -26,6 +28,8 @@ app.use("/kpi", kpiRoutes);
 app.use("/product", productRoutes);
 app.use("/transaction", transactionRoutes);
 app.use("/revenue", revenueRoutes);
+app.use("/expense", expenseRoutes);
+app.use("/order", orderRoutes);
 
 // Test route
 app.get("/test", (req, res) => {

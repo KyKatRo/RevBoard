@@ -61,3 +61,16 @@ export interface GetRevenuesResponse {
 	month: number;
 	totalrevenue: number;
 }
+
+export interface GetExpensesResponse {
+	year: number;
+	month: number;
+	amount: number;
+}
+
+export interface GetOrdersResponse {
+	order_id: number;
+	buyer_name: string;
+	cost: number;
+	quantity: number;
+}
