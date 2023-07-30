@@ -58,14 +58,21 @@ export interface GetTransactionsResponse {
 
 export interface GetRevenuesResponse {
 	year: number;
-	month: number;
+	month: string;
 	totalrevenue: number;
 }
 
 export interface GetExpensesResponse {
 	year: number;
-	month: number;
+	month: string;
 	amount: number;
+}
+
+export interface GetExpensesByTypeResponse {
+	year: number;
+	month: string;
+	operationalexpense: number;
+	nonoperationalexpense: number;
 }
 
 export interface GetOrdersResponse {

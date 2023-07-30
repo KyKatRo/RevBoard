@@ -5,6 +5,7 @@ import {
 	GetTransactionsResponse,
 	GetRevenuesResponse,
 	GetExpensesResponse,
+	GetExpensesByTypeResponse,
 	GetOrdersResponse,
 } from "./types";
 
@@ -18,6 +19,7 @@ export const api = createApi({
 		"Revenues",
 		"Expenses",
 		"Orders",
+		"ExpensesByType",
 	],
 	endpoints: (build) => ({
 		getKpis: build.query<Array<GetKpisResponse>, void>({
@@ -40,6 +42,10 @@ export const api = createApi({
 			query: () => `expense/expenses/`,
 			providesTags: ["Expenses"],
 		}),
+		getExpensesByType: build.query<Array<GetExpensesByTypeResponse>, void>({
+			query: () => `expense/expenses-by-type/`,
+			providesTags: ["ExpensesByType"],
+		}),
 		getOrders: build.query<Array<GetOrdersResponse>, void>({
 			query: () => `order/orders/`,
 			providesTags: ["Orders"],
@@ -53,5 +59,6 @@ export const {
 	useGetTransactionsQuery,
 	useGetRevenuesQuery,
 	useGetExpensesQuery,
+	useGetExpensesByTypeQuery,
 	useGetOrdersQuery,
 } = api;
