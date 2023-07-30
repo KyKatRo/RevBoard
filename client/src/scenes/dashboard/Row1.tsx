@@ -166,7 +166,7 @@ const Row1 = () => {
 						data={revenueProfit}
 						margin={{
 							top: 20,
-							right: 0,
+							right: 25,
 							left: -10,
 							bottom: 55,
 						}}
@@ -181,18 +181,11 @@ const Row1 = () => {
 							style={{ fontSize: "10px" }}
 						/>
 						<YAxis
-							yAxisId='left'
 							tickLine={false}
 							axisLine={false}
 							style={{ fontSize: "10px" }}
 						/>
-						<YAxis
-							yAxisId='right'
-							orientation='right'
-							tickLine={false}
-							axisLine={false}
-							style={{ fontSize: "10px" }}
-						/>
+
 						<Tooltip />
 						<Legend
 							height={20}
@@ -201,13 +194,11 @@ const Row1 = () => {
 							}}
 						/>
 						<Line
-							yAxisId='right'
 							type='monotone'
 							dataKey='revenue'
 							stroke={palette.primary.main}
 						/>
 						<Line
-							yAxisId='left'
 							type='monotone'
 							dataKey='profit'
 							stroke={palette.tertiary[500]}
@@ -225,7 +216,7 @@ const Row1 = () => {
 						data={revenue}
 						margin={{
 							top: 17,
-							right: 15,
+							right: 25,
 							left: -5,
 							bottom: 58,
 						}}

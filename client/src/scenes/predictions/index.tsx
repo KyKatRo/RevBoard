@@ -1,6 +1,6 @@
 import DashboardBox from "@/components/DashboardBox";
 import FlexBetween from "@/components/FlexBetween";
-import { useGetKpisQuery } from "@/state/api";
+import { useGetKpisQuery, useGetRevenuesQuery } from "@/state/api";
 import { Box, Button, Typography, useTheme } from "@mui/material";
 import { useMemo, useState } from "react";
 import {
@@ -20,26 +20,30 @@ const Predictions = () => {
 	const { palette } = useTheme();
 	const [isPredictions, setIsPredictions] = useState(false);
 	const { data: kpiData } = useGetKpisQuery();
+	const { data: revenueData } = useGetRevenuesQuery();
 
 	const formattedData = useMemo(() => {
 		if (!kpiData) return [];
-		const monthData = kpiData[0].monthlyData;
+		const monthData = revenueData;
 
-		const formatted: Array<DataPoint> = monthData.map(
-			({ revenue }, i: number) => {
-				return [i, Number(revenue.replace("$", ""))];
-			}
-		);
+		const formatted: Array<DataPoint> =
+			revenueData &&
+			revenueData.map(({ totalrevenue }, i: number) => {
+				return [i, Number(totalrevenue)];
+			});
 		const regressionLine = regression.linear(formatted);
 
-		return monthData.map(({ month, revenue }, i: number) => {
-			return {
-				name: month,
-				"Actual Revenue": Number(revenue.replace("$", "")),
-				"Regression Line": regressionLine.points[i][1],
-				"Predicted Revenue": regressionLine.predict(i + 12)[1],
-			};
-		});
+		return (
+			revenueData &&
+			revenueData.map(({ month, totalrevenue }, i: number) => {
+				return {
+					name: month,
+					"Actual Revenue": Number(totalrevenue),
+					"Regression Line": regressionLine.points[i][1],
+					"Predicted Revenue": regressionLine.predict(i + 12)[1],
+				};
+			})
+		);
 	}, [kpiData]);
 
 	return (
@@ -91,7 +95,7 @@ const Predictions = () => {
 						/>
 					</XAxis>
 					<YAxis
-						domain={[12000, 26000]}
+						domain={["auto", "auto"]}
 						axisLine={{ strokeWidth: "0" }}
 						style={{ fontSize: "10px" }}
 						tickFormatter={(v) => `$${v}`}

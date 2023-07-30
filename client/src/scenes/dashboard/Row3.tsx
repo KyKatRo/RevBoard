@@ -41,8 +41,6 @@ const Row3 = () => {
 		}
 	}, [kpiData]);
 
-	console.log(productData);
-
 	const productColumns = [
 		{
 			field: "product_id",
