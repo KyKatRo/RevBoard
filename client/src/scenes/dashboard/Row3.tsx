@@ -18,8 +18,21 @@ const Row3 = () => {
 	const pieColors = [palette.primary[800], palette.primary[500]];
 
 	const { data: kpiData } = useGetKpisQuery();
-	const { data: productData } = useGetProductsQuery();
-	const { data: orderData } = useGetOrdersQuery();
+	const { data: rawProductData } = useGetProductsQuery();
+	const productData = rawProductData?.map(product => ({
+		...product,
+		product_id: Number(product.product_id),
+		expense_amount: Number(product.expense_amount),
+		product_price: Number(product.product_price)
+	}));
+
+	const { data: rawOrderData } = useGetOrdersQuery();
+	const orderData = rawOrderData?.map(order => ({
+		...order,
+		order_id: Number(order.order_id),
+		quantity: Number(order.quantity)
+	}));
+
 	const [deleteOrder] = useDeleteOrderMutation();
 
 	const pieChartData = useMemo(() => {
@@ -49,6 +62,7 @@ const Row3 = () => {
 			field: "product_id",
 			headerName: "id",
 			flex: 0.5,
+			type: 'number',
 		},
 		{
 			field: "product_name",
@@ -61,12 +75,14 @@ const Row3 = () => {
 			headerName: "Expense",
 			flex: 0.6,
 			renderCell: (params: GridCellParams) => `${Number(params.value)}`,
+			type: 'number',
 		},
 		{
 			field: "product_price",
 			headerName: "Price",
 			flex: 0.4,
 			renderCell: (params: GridCellParams) => `${Number(params.value)}`,
+			type: 'number',
 		},
 	];
 
@@ -75,23 +91,19 @@ const Row3 = () => {
 			field: "order_id",
 			headerName: "id",
 			flex: 1,
+			type: 'number',
 		},
 		{
 			field: "buyer_name",
 			headerName: "Buyer",
 			flex: 0.67,
 		},
-		// {
-		// 	field: "amount",
-		// 	headerName: "Amount",
-		// 	flex: 0.35,
-		// 	renderCell: (params: GridCellParams) => `${params.value}`,
-		// },
 		{
 			field: "quantity",
 			headerName: "Count",
 			flex: 0.1,
 			renderCell: (params: GridCellParams) => `${Number(params.value)}`,
+			type: 'number',
 		},
 		{
 			field: 'delete',
@@ -108,6 +120,7 @@ const Row3 = () => {
 			),
 		},
 	];
+
 
 	return (
 		<>
