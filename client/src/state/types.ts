@@ -88,3 +88,7 @@ export interface GetProductsResponse {
 	product_price: number;
 	expense_amount: number;
 }
+
+export interface DeleteOrderResponse {
+	message: string;
+}

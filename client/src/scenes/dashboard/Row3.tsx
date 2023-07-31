@@ -5,7 +5,7 @@ import {
 	useGetKpisQuery,
 	useGetProductsQuery,
 	useGetOrdersQuery,
-	deleteProduct,
+	useDeleteOrderMutation,
 } from "@/state/api";
 import { Box, Typography, useTheme } from "@mui/material";
 import {DataGrid, GridCellParams, GridRenderCellParams} from "@mui/x-data-grid";
@@ -20,6 +20,7 @@ const Row3 = () => {
 	const { data: kpiData } = useGetKpisQuery();
 	const { data: productData } = useGetProductsQuery();
 	const { data: orderData } = useGetOrdersQuery();
+	const [deleteOrder] = useDeleteOrderMutation();
 
 	const pieChartData = useMemo(() => {
 		if (kpiData) {
@@ -101,8 +102,7 @@ const Row3 = () => {
 				<Button
 					variant="contained"
 					color="secondary"
-					onClick={() => deleteProduct(params.row.product_id)}
-				>
+					onClick={() => deleteOrder(params.row.order_id)}>
 					Delete
 				</Button>
 			),

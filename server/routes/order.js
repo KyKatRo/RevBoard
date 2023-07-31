@@ -17,4 +17,34 @@ router.get("/orders", async (req, res) => {
 	}
 });
 
+router.delete("/orders/:id", async (req, res) => {
+	try {
+		const id = req.params.id;
+
+		const generated_query = "DELETE FROM generated_by WHERE order_id = $1";
+		await pool.query(generated_query, [id]);
+
+		const bought_query = "DELETE FROM bought WHERE order_id = $1";
+		await pool.query(bought_query, [id]);
+
+		const revenue_query = "SELECT revenue_id FROM earned_by WHERE order_id = $1";
+		await pool.query(revenue_query, [id]);
+
+		// Delete the corresponding row from the "earned_by" table
+		const earned_query = "DELETE FROM earned_by WHERE order_id = $1";
+		await pool.query(earned_query, [id]);
+
+		const order_query = "DELETE FROM ordered_by WHERE order_id = $1";
+		await pool.query(order_query, [id]);
+
+		const orders_query = "DELETE FROM orders WHERE order_id = $1";
+		await pool.query(orders_query, [id]);
+
+		res.status(200).json({ message: "Order deleted successfully" });
+	} catch (err) {
+		console.log(err);
+		res.status(500).json({ message: err.message });
+	}
+});
+
 export default router;

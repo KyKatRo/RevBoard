@@ -7,6 +7,7 @@ import {
 	GetExpensesByTypeResponse,
 	GetOrdersResponse,
 	GetProductsResponse,
+	DeleteOrderResponse
 } from "./types";
 
 export const api = createApi({
@@ -21,6 +22,7 @@ export const api = createApi({
 		"Orders",
 		"ExpensesByType",
 		"Products",
+		"DELETE"
 	],
 	endpoints: (build) => ({
 		getKpis: build.query<Array<GetKpisResponse>, void>({
@@ -51,6 +53,13 @@ export const api = createApi({
 			query: () => `product/products/`,
 			providesTags: ["Products"],
 		}),
+		deleteOrder: build.mutation<DeleteOrderResponse, number>({
+			query: (id) => ({
+				url: `order/orders/${id}`,
+				method: 'DELETE',
+			}),
+			invalidatesTags: ["Orders"],
+		}),
 	}),
 });
 
@@ -62,4 +71,5 @@ export const {
 	useGetExpensesByTypeQuery,
 	useGetOrdersQuery,
 	useGetProductsQuery,
+	useDeleteOrderMutation,
 } = api;
