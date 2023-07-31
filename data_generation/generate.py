@@ -7,11 +7,13 @@ from dotenv import load_dotenv
 import os
 import random
 from datetime import date
+from tqdm import tqdm
+import time
 
-NUM_BUYERS = 10000
-NUM_PRODUCTS = 100
-NUM_ORDERS = 30000
-NUM_CAMPAIGNS = 10
+NUM_BUYERS = 10  # 000
+NUM_PRODUCTS = 10  # 0
+NUM_ORDERS = 30  # 000
+NUM_CAMPAIGNS = 1  # 0
 
 fake = Faker()
 
@@ -24,8 +26,6 @@ user = os.getenv("USER")
 password = os.getenv("PASSWORD")
 host = os.getenv("HOST")
 port = os.getenv("PORT")
-
-print(dbname, user, password, host, port)
 
 # Use the values to connect
 conn = psycopg2.connect(
@@ -64,6 +64,76 @@ def test_database_query():
     print(records)
 
     # Close communication with the database
+    cur.close()
+    conn.close()
+
+
+def generate_tables():
+    cur = conn.cursor()
+
+    tables = [
+        """
+        CREATE TABLE Buyers (
+            buyer_id BIGINT NOT NULL,
+            buyer_name VARCHAR(50) NOT NULL,
+            email VARCHAR(40) UNIQUE NOT NULL,
+            password VARCHAR(40),
+            PRIMARY KEY (buyer_id)
+        );
+        """,
+        """
+        CREATE TABLE Products (
+            product_id BIGINT NOT NULL,
+            product_name VARCHAR(50) NOT NULL,
+            product_price DECIMAL(10,2),
+            PRIMARY KEY(product_id)
+        );
+        """,
+        """
+        CREATE TABLE Orders (
+            order_id BIGINT NOT NULL,
+            order_date DATE,
+            quantity INT,
+            PRIMARY KEY(order_id)
+        );
+        """,
+        """
+        CREATE TABLE Revenue (
+            revenue_id BIGINT NOT NULL,
+            revenue_date DATE,
+            totalRevenue DECIMAL(10,2),
+            PRIMARY KEY(revenue_id)
+        );
+        """,
+        """
+        CREATE TABLE Expenses (
+            expense_id BIGINT NOT NULL,
+            expense_date DATE,
+            expenseCategory VARCHAR(40) NOT NULL,
+            amount DECIMAL(10,2),
+            operationalType VARCHAR(20) CHECK (operationalType IN ('operational', 'non-operational')),
+            PRIMARY KEY(expense_id)
+        );
+        """,
+        """
+        CREATE TABLE Campaigns (
+            campaign_id BIGINT NOT NULL,
+            campaign_name VARCHAR(50) NOT NULL,
+            campaignStartDate DATE NOT NULL,
+            campaignEndDate DATE NOT NULL,
+            target DECIMAL(10,2),
+            PRIMARY KEY(campaign_id)
+        );
+        """
+    ]
+
+    for table in tables:
+        cur.execute(table)
+
+    # commit the transactions
+    conn.commit()
+
+    # close the cursor and connection
     cur.close()
     conn.close()
 
@@ -202,6 +272,8 @@ def generate_unique_product_names(count):
 
 
 def create_database_entries():
+    clear_all_tables()
+
     # Use the values to connect
     conn = psycopg2.connect(
         dbname=dbname,
@@ -217,10 +289,8 @@ def create_database_entries():
     current_year = date.today().year
 
     # Generate data for each table
-    print("Creating Buyer Entries")
-    for i in range(NUM_BUYERS):
-        if i % 100 == 0:
-            print(f"Created {i} buyer entries so far.")
+    print("\n \n Creating Buyer Entries")
+    for i in tqdm(range(NUM_BUYERS)):
         # Buyers
         buyer_id = i
         name = fake.name()
@@ -229,14 +299,14 @@ def create_database_entries():
         cur.execute("INSERT INTO Buyers (buyer_Id, buyer_name, email, password) VALUES (%s, %s, %s, %s)",
                     (buyer_id, name, email, user_password))
 
+    time.sleep(0.1)
+
     unique_product_names = generate_unique_product_names(NUM_PRODUCTS)
 
     price_log = [None]*NUM_PRODUCTS
 
-    print("Creating Product Entries")
-    for i in range(NUM_PRODUCTS):
-        if i % 100 == 0:
-            print(f"Created {i} product entries so far.")
+    print("\n \n Creating Product Entries")
+    for i in tqdm(range(NUM_PRODUCTS)):
         # Products
         product_id = i
         product_name = unique_product_names[i]
@@ -259,12 +329,12 @@ def create_database_entries():
         cur.execute("INSERT INTO Manufacturing_cost (product_ID, expense_ID) VALUES (%s, %s)",
                     (i, i))
 
+    time.sleep(0.1)
+
     campaign_history = [None]*NUM_CAMPAIGNS
 
-    print("Creating Campaign Entries")
-    for i in range(NUM_CAMPAIGNS):
-        if i % 100 == 0:
-            print(f"Created {i} campaign entries so far.")
+    print("\n \n Creating Campaign Entries")
+    for i in tqdm(range(NUM_CAMPAIGNS)):
         # Campaigns
         campaign_id = i
         name = fake.word()
@@ -293,10 +363,10 @@ def create_database_entries():
         cur.execute("INSERT INTO campaign_cost (campaign_ID, expense_ID) VALUES (%s, %s)",
                     (i, i))
 
-    print("Creating Order Entries")
-    for i in range(NUM_ORDERS):
-        if i % 100 == 0:
-            print(f"Created {i} order entries so far.")
+    time.sleep(0.1)
+
+    print("\n \n Creating Order Entries")
+    for i in tqdm(range(NUM_ORDERS)):
         # Orders
         order_id = i
         order_date = fake.date_between(start_date=date(current_year, 1, 1), end_date=date(current_year, 12, 31))
