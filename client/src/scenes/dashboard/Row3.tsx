@@ -30,7 +30,8 @@ const Row3 = () => {
 	const orderData = rawOrderData?.map(order => ({
 		...order,
 		order_id: Number(order.order_id),
-		quantity: Number(order.quantity)
+		quantity: Number(order.quantity),
+		totalRevenue: Number(order.totalRevenue)
 	}));
 
 	const [deleteOrder] = useDeleteOrderMutation();
@@ -61,8 +62,9 @@ const Row3 = () => {
 		{
 			field: "product_id",
 			headerName: "id",
-			flex: 0.5,
+			flex: 0.3,
 			type: 'number',
+			hide: true,
 		},
 		{
 			field: "product_name",
@@ -72,8 +74,8 @@ const Row3 = () => {
 		},
 		{
 			field: "expense_amount",
-			headerName: "Expense",
-			flex: 0.6,
+			headerName: "Manufacturing Cost",
+			flex: 0.7,
 			renderCell: (params: GridCellParams) => `${Number(params.value)}`,
 			type: 'number',
 		},
@@ -90,21 +92,44 @@ const Row3 = () => {
 		{
 			field: "order_id",
 			headerName: "id",
-			flex: 1,
+			flex: 0.3,
 			type: 'number',
+			hide: true,
 		},
 		{
 			field: "buyer_name",
 			headerName: "Buyer",
-			flex: 0.67,
+			flex: 0.4,
 		},
 		{
 			field: "quantity",
-			headerName: "Count",
-			flex: 0.1,
+			headerName: "Quantity",
+			flex: 0.2,
 			renderCell: (params: GridCellParams) => `${Number(params.value)}`,
 			type: 'number',
 		},
+		{
+			field: "totalrevenue",
+			headerName: "Price",
+			flex: 0.3,
+			renderCell: (params: GridCellParams) => `${Number(params.value)}`,
+			type: 'number',
+		},
+		{
+			field: "order_date",
+			headerName: "Date",
+			flex: 0.4,
+			renderCell: (params: GridCellParams) => {
+				let date = new Date(params.value);
+
+				let day = ("0" + date.getDate()).slice(-2); // gets the day and ensures it is two digits
+				let month = ("0" + (date.getMonth() + 1)).slice(-2); // gets the month and ensures it is two digits
+				let year = date.getFullYear(); // gets the year
+
+				return `${day}-${month}-${year}`;
+			},
+		},
+
 		{
 			field: 'delete',
 			headerName: 'Delete',

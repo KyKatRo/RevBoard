@@ -38,8 +38,6 @@ const Row2 = () => {
 
 	const { data: campaignsHitTargetPercentageObject, isLoading } = useGetCampaignSuccessPercentageQuery();
 
-	console.log(campaignsHitTargetPercentageObject)
-
 	let campaignsHitTargetPercentage = 0
 
 	if (!isLoading && campaignsHitTargetPercentageObject) {
@@ -51,7 +49,6 @@ const Row2 = () => {
 	 	{ name: 'Campaigns Missed Target', value: 100 - campaignsHitTargetPercentage },
 	 ];
 
-	console.log(pieData)
 
 
 	const { data: targetExact } = useGetTargetQuery();

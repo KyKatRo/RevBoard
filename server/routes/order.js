@@ -3,14 +3,17 @@ import pool from "../db.js";
 
 const router = express.Router();
 
-const query = `SELECT o.order_id, b.buyer_name, o.quantity
-                FROM orders o, buyers b, ordered_by ob
+const query = `SELECT o.order_id, b.buyer_name, o.quantity, r.totalRevenue, o.order_date
+                FROM orders o, buyers b, ordered_by ob, revenue r, earned_by eb
                 WHERE o.order_id = ob.order_id
-	            and ob.buyer_id = b.buyer_id; `;
+	            and ob.buyer_id = b.buyer_id
+                and o.order_id = eb.order_ID
+                and r.revenue_id = eb.revenue_ID; `;
 
 router.get("/orders", async (req, res) => {
 	try {
 		const data = await pool.query(query);
+		console.log(data.rows);
 		res.status(200).json(data.rows);
 	} catch (err) {
 		res.status(500).json({ message: err.message });

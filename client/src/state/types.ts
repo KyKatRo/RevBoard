@@ -78,8 +78,10 @@ export interface GetExpensesByTypeResponse {
 export interface GetOrdersResponse {
 	order_id: number;
 	buyer_name: string;
-	cost: number;
 	quantity: number;
+	totalrevenue: number;
+	order_date: number;
+
 }
 
 export interface GetProductsResponse {
