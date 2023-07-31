@@ -64,7 +64,6 @@ const Row3 = () => {
 			headerName: "id",
 			flex: 0.3,
 			type: 'number',
-			hide: true,
 		},
 		{
 			field: "product_name",
@@ -94,7 +93,6 @@ const Row3 = () => {
 			headerName: "id",
 			flex: 0.3,
 			type: 'number',
-			hide: true,
 		},
 		{
 			field: "buyer_name",
@@ -180,6 +178,13 @@ const Row3 = () => {
 						hideFooter={true}
 						rows={productData || []}
 						columns={productColumns}
+						initialState={{
+							columns: {
+								columnVisibilityModel: {
+									product_id: false
+								}
+							}
+						}}
 						getRowId={(row) => row.product_id}
 					/>
 				</Box>
@@ -215,6 +220,13 @@ const Row3 = () => {
 						hideFooter={true}
 						rows={orderData || []}
 						columns={orderColumns}
+						initialState={{
+							columns: {
+								columnVisibilityModel: {
+									order_id: false
+								}
+							}
+						}}
 						getRowId={(row) => row.order_id}
 					/>
 				</Box>
