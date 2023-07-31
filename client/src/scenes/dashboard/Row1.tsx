@@ -131,7 +131,9 @@ const Row1 = () => {
 							style={{ fontSize: "10px" }}
 							tickFormatter={(tick) => `$${tick / 1000}k`}
 						/>
-						<Tooltip />
+						<Tooltip
+							formatter={(value) => `$${Number(value).toLocaleString()}`}
+						/>
 						<Legend
 							height={20}
 							wrapperStyle={{
@@ -188,7 +190,10 @@ const Row1 = () => {
 							tickFormatter={(tick) => `$${tick / 1000}k`}
 						/>
 
-						<Tooltip />
+						<Tooltip
+							formatter={(value) => `$${Number(value).toLocaleString()}`}
+						/>
+
 						<Legend
 							height={20}
 							wrapperStyle={{
@@ -259,7 +264,9 @@ const Row1 = () => {
 							style={{ fontSize: "10px" }}
 							tickFormatter={(tick) => `$${tick / 1000}k`}
 						/>
-						<Tooltip />
+						<Tooltip
+							formatter={(value) => `$${Number(value).toLocaleString()}`}
+						/>
 						<Bar dataKey='revenue' fill='url(#colorRevenue)' />
 					</BarChart>
 				</ResponsiveContainer>

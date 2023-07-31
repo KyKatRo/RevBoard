@@ -143,7 +143,9 @@ const Row2 = () => {
 							style={{ fontSize: "10px" }}
 							tickFormatter={(tick) => `$${tick / 1000}k`}
 						/>
-						<Tooltip />
+						<Tooltip
+							formatter={(value) => `$${Number(value).toLocaleString()}`}
+						/>
 						<Line
 							type='monotone'
 							dataKey='Non Operational Expenses'
@@ -245,7 +247,9 @@ const Row2 = () => {
 							tickFormatter={(tick) => `$${tick / 1000}k`}
 						/>
 						<ZAxis type='number' range={[20]} />
-						<Tooltip formatter={(v) => `$${v}`} />
+						<Tooltip
+							formatter={(value) => `$${Number(value).toLocaleString()}`}
+						/>
 						<Scatter
 							name='Product Expense Ratio'
 							data={productExpenseData}
