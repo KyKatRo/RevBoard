@@ -124,7 +124,7 @@ const Row3 = () => {
 				let month = ("0" + (date.getMonth() + 1)).slice(-2); // gets the month and ensures it is two digits
 				let year = date.getFullYear(); // gets the year
 
-				return `${day}-${month}-${year}`;
+				return `${month}-${day}-${year}`;
 			},
 		},
 
