@@ -129,6 +129,7 @@ const Row1 = () => {
 							tickLine={false}
 							axisLine={{ strokeWidth: "0" }}
 							style={{ fontSize: "10px" }}
+							tickFormatter={(tick) => `$${tick / 1000}k`}
 						/>
 						<Tooltip />
 						<Legend
@@ -184,6 +185,7 @@ const Row1 = () => {
 							tickLine={false}
 							axisLine={false}
 							style={{ fontSize: "10px" }}
+							tickFormatter={(tick) => `$${tick / 1000}k`}
 						/>
 
 						<Tooltip />
@@ -255,6 +257,7 @@ const Row1 = () => {
 							axisLine={false}
 							tickLine={false}
 							style={{ fontSize: "10px" }}
+							tickFormatter={(tick) => `$${tick / 1000}k`}
 						/>
 						<Tooltip />
 						<Bar dataKey='revenue' fill='url(#colorRevenue)' />

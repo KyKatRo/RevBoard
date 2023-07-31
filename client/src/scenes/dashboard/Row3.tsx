@@ -197,7 +197,7 @@ const Row3 = () => {
 				<Box
 					mt='1rem'
 					p='0 0.5rem'
-					height='80%'
+					height='86%'
 					sx={{
 						"& .MuiDataGrid-root": {
 							color: palette.grey[300],

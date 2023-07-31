@@ -141,6 +141,7 @@ const Row2 = () => {
 							tickLine={false}
 							axisLine={false}
 							style={{ fontSize: "10px" }}
+							tickFormatter={(tick) => `$${tick / 1000}k`}
 						/>
 						<Tooltip />
 						<Line
@@ -241,7 +242,7 @@ const Row2 = () => {
 							axisLine={false}
 							tickLine={false}
 							style={{ fontSize: "10px" }}
-							tickFormatter={(v) => `$${v}`}
+							tickFormatter={(tick) => `$${tick / 1000}k`}
 						/>
 						<ZAxis type='number' range={[20]} />
 						<Tooltip formatter={(v) => `$${v}`} />
