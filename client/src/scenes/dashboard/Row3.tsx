@@ -5,9 +5,11 @@ import {
 	useGetKpisQuery,
 	useGetProductsQuery,
 	useGetOrdersQuery,
+	deleteProduct,
 } from "@/state/api";
 import { Box, Typography, useTheme } from "@mui/material";
-import { DataGrid, GridCellParams } from "@mui/x-data-grid";
+import {DataGrid, GridCellParams, GridRenderCellParams} from "@mui/x-data-grid";
+import Button from '@mui/material/Button';
 import { useMemo } from "react";
 import { Cell, Pie, PieChart } from "recharts";
 
@@ -89,6 +91,21 @@ const Row3 = () => {
 			headerName: "Count",
 			flex: 0.1,
 			renderCell: (params: GridCellParams) => `${Number(params.value)}`,
+		},
+		{
+			field: 'delete',
+			headerName: 'Delete',
+			sortable: false,
+			width: 100,
+			renderCell: (params: GridRenderCellParams) => (
+				<Button
+					variant="contained"
+					color="secondary"
+					onClick={() => deleteProduct(params.row.product_id)}
+				>
+					Delete
+				</Button>
+			),
 		},
 	];
 

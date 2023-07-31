@@ -21,21 +21,6 @@ const Navbar = () => {
 			<FlexBetween gap='2rem'>
 				<Box sx={{ "&:hover": { color: palette.primary[100] } }}>
 					<Link
-						to='/modify-selections'
-						onClick={() => setSelected("modify_selection")}
-						style={{
-							color:
-								selected === "modify_selection"
-									? "inherit"
-									: palette.grey[700],
-							textDecoration: "inherit",
-						}}
-					>
-						Modify Selections
-					</Link>
-				</Box>
-				<Box sx={{ "&:hover": { color: palette.primary[100] } }}>
-					<Link
 						to='/'
 						onClick={() => setSelected("dashboard")}
 						style={{
