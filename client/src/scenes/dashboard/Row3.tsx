@@ -162,7 +162,7 @@ const Row3 = () => {
 			<DashboardBox gridArea='h'>
 				<BoxHeader
 					title='Recent Orders'
-					sideText={`${orderData?.length} latest orders`}
+					sideText={`${orderData?.length} orders`}
 				/>
 				<Box
 					mt='1rem'
@@ -193,38 +193,6 @@ const Row3 = () => {
 						getRowId={(row) => row.order_id}
 					/>
 				</Box>
-			</DashboardBox>
-			<DashboardBox gridArea='i'>
-				<BoxHeader title='Expense Breakdown By Category' sideText='' />
-				<FlexBetween
-					mt='0.5rem'
-					gap='0.5rem'
-					p='0 1rem'
-					textAlign='center'
-				>
-					{pieChartData?.map((data, i) => (
-						<Box key={`${data[0].name}-${i}`}>
-							<PieChart width={110} height={100}>
-								<Pie
-									stroke='none'
-									data={data}
-									innerRadius={18}
-									outerRadius={35}
-									paddingAngle={2}
-									dataKey='value'
-								>
-									{data.map((entry, index) => (
-										<Cell
-											key={`cell-${index}`}
-											fill={pieColors[index]}
-										/>
-									))}
-								</Pie>
-							</PieChart>
-							<Typography variant='h5'>{data[0].name}</Typography>
-						</Box>
-					))}
-				</FlexBetween>
 			</DashboardBox>
 			<DashboardBox gridArea='j'>
 				<BoxHeader

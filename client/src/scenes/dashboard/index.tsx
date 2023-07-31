@@ -8,10 +8,10 @@ const gridTemplateLarge = `
     "a b c"
     "a b c"
     "a b f"
-    "d e f"
-    "d e f"
-    "d h i"
-    "g h i"
+    "d h f"
+    "d h f"
+    "d h e"
+    "g h e"
     "g h j"
     "g h j"
 `;
@@ -43,8 +43,6 @@ const gridTemplateSmall = `
     "h"
     "h"
     "h"
-    "i"
-    "i"
     "j"
     "j"
 `;
