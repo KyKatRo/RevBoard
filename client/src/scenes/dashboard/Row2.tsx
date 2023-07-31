@@ -1,7 +1,12 @@
 import BoxHeader from "@/components/BoxHeader";
 import DashboardBox from "@/components/DashboardBox";
 import FlexBetween from "@/components/FlexBetween";
-import { useGetProductsQuery, useGetExpensesByTypeQuery } from "@/state/api";
+import {useGetProductsQuery,
+	useGetExpensesByTypeQuery,
+	useGetRevenuesQuery,
+	useGetExpensesQuery,
+	useGetCampaignSuccessPercentageQuery,
+	useGetTargetQuery} from "@/state/api";
 import { Box, Typography, useTheme } from "@mui/material";
 import { useMemo } from "react";
 import {
@@ -20,16 +25,38 @@ import {
 	ZAxis,
 } from "recharts";
 
-const pieData = [
-	{ name: "Group A", value: 600 },
-	{ name: "Group B", value: 400 },
-];
+// const pieData = [
+// 	{ name: "Group A", value: 600 },
+// 	{ name: "Group B", value: 400 },
+// ];
 
 const Row2 = () => {
 	const { palette } = useTheme();
-	const pieColors = [palette.primary[800], palette.primary[300]];
+	const pieColors = [palette.primary[300], palette.primary[800]];
 	const { data: productData } = useGetProductsQuery();
 	const { data: expensesByTypeData } = useGetExpensesByTypeQuery();
+
+	const { data: campaignsHitTargetPercentageObject, isLoading } = useGetCampaignSuccessPercentageQuery();
+
+	console.log(campaignsHitTargetPercentageObject)
+
+	let campaignsHitTargetPercentage = 0
+
+	if (!isLoading && campaignsHitTargetPercentageObject) {
+		campaignsHitTargetPercentage = campaignsHitTargetPercentageObject.successPercentage
+	}
+
+	const pieData = [
+	 	{ name: 'Campaigns Hit Target', value: campaignsHitTargetPercentage },
+	 	{ name: 'Campaigns Missed Target', value: 100 - campaignsHitTargetPercentage },
+	 ];
+
+	console.log(pieData)
+
+
+	const { data: targetExact } = useGetTargetQuery();
+	const target = Math.round(targetExact / 1000)
+
 
 	const operationalExpenses = useMemo(() => {
 		return (
@@ -63,6 +90,28 @@ const Row2 = () => {
 			)
 		);
 	}, [productData]);
+
+	const { data: revenueData } = useGetRevenuesQuery();
+	const { data: expenseData } = useGetExpensesQuery();
+	const percentIncreaseInRevenue = useMemo(() => {
+		if (revenueData && revenueData.length >= 12) {
+			const revenueMonth11 = Number(revenueData[10].totalrevenue);
+			const revenueMonth12 = Number(revenueData[11].totalrevenue);
+			const increase = revenueMonth12 - revenueMonth11;
+			return (increase / revenueMonth11) * 100;
+		}
+		return 0;
+	}, [revenueData]);
+
+	const percentDecreaseInExpenses = useMemo(() => {
+		if (expenseData && expenseData.length >= 12) {
+			const expensesMonth11 = Number(expenseData[10].amount);
+			const expensesMonth12 = Number(expenseData[11].amount);
+			const decrease = expensesMonth11 - expensesMonth12;
+			return (decrease / expensesMonth11) * 100;
+		}
+		return 0;
+	}, [expenseData]);
 
 	return (
 		<>
@@ -111,7 +160,7 @@ const Row2 = () => {
 				</ResponsiveContainer>
 			</DashboardBox>
 			<DashboardBox gridArea='e'>
-				<BoxHeader title='Campaigns and Targets' sideText='' />
+				<BoxHeader title='Campaign Success and Targets' sideText='' />
 				<FlexBetween mt='0.25rem' gap='1.5rem' pr='1rem'>
 					<PieChart
 						width={110}
@@ -123,6 +172,7 @@ const Row2 = () => {
 							bottom: 0,
 						}}
 					>
+
 						<Pie
 							stroke='none'
 							data={pieData}
@@ -146,22 +196,22 @@ const Row2 = () => {
 							variant='h3'
 							color={palette.primary[300]}
 						>
-							83
+							${target}k {/* Display the actual target value */}
 						</Typography>
 						<Typography variant='h6'>
-							Finance goals of the campaign that is desired
+							Goal of this campaign
 						</Typography>
 					</Box>
 					<Box flexBasis='40%'>
 						<Typography variant='h5'>Losses in Revenue</Typography>
 						<Typography variant='h6'>
-							Losses are down 25%
+							Losses are down {percentDecreaseInExpenses.toFixed(2)}%.
 						</Typography>
 						<Typography mt='0.4rem' variant='h5'>
 							Profit Margins
 						</Typography>
 						<Typography variant='h6'>
-							Margins are up by 30% from last month.
+							Margins are up by {percentIncreaseInRevenue.toFixed(2)}% from last month.
 						</Typography>
 					</Box>
 				</FlexBetween>

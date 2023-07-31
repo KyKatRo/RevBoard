@@ -7,7 +7,9 @@ import {
 	GetExpensesByTypeResponse,
 	GetOrdersResponse,
 	GetProductsResponse,
-	DeleteOrderResponse
+	DeleteOrderResponse,
+	GetCampaignSuccessPercentageResponse,
+	GetTargetResponse,
 } from "./types";
 
 export const api = createApi({
@@ -22,7 +24,8 @@ export const api = createApi({
 		"Orders",
 		"ExpensesByType",
 		"Products",
-		"DELETE"
+		"DELETE",
+		"Campaigns",
 	],
 	endpoints: (build) => ({
 		getKpis: build.query<Array<GetKpisResponse>, void>({
@@ -60,6 +63,14 @@ export const api = createApi({
 			}),
 			invalidatesTags: ["Orders"],
 		}),
+		getCampaignSuccessPercentage: build.query<GetCampaignSuccessPercentageResponse, void>({
+			query: () => `campaign/success/`,
+			providesTags: ["Campaigns"],
+		}),
+		getTarget: build.query<GetTargetResponse, void>({
+			query: () => `campaign/target/`,
+			providesTags: ["Campaigns"],
+		}),
 	}),
 });
 
@@ -72,4 +83,6 @@ export const {
 	useGetOrdersQuery,
 	useGetProductsQuery,
 	useDeleteOrderMutation,
+	useGetCampaignSuccessPercentageQuery,
+	useGetTargetQuery,
 } = api;

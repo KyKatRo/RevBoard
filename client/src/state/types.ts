@@ -92,3 +92,11 @@ export interface GetProductsResponse {
 export interface DeleteOrderResponse {
 	message: string;
 }
+
+export interface GetCampaignSuccessPercentageResponse {
+	success_percentage: number;
+}
+
+export interface GetTargetResponse {
+	target: number;
+}
