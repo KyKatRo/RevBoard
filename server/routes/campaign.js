@@ -25,14 +25,14 @@ const target_query = `SELECT campaign_name, target
 router.get("/success", async (req, res) => {
 	try {
 		const data = await pool.query(success_query);
-		const successPercentage = Number(data.rows[0].percentagecampaignshittarget);
+		const successPercentage = Number(
+			data.rows[0].percentagecampaignshittarget
+		);
 		res.status(200).json({ successPercentage });
 	} catch (err) {
-		console.log("Error executing the query:", err);
-		res.status(500).json({ message: err.message });
+		res.status(404).json({ message: err.message });
 	}
 });
-
 
 router.get("/target", async (req, res) => {
 	try {
@@ -40,7 +40,7 @@ router.get("/target", async (req, res) => {
 		const target = Number(data.rows[0].target);
 		res.status(200).json(target);
 	} catch (err) {
-		res.status(500).json({ message: err.message });
+		res.status(404).json({ message: err.message });
 	}
 });
 

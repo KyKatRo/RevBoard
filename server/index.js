@@ -5,11 +5,9 @@ import dotenv from "dotenv";
 import helmet from "helmet";
 import morgan from "morgan";
 import pool from "./db.js";
-import kpiRoutes from "./routes/kpi.js";
-import productRoutes from "./routes/product.js";
-import transactionRoutes from "./routes/transaction.js";
 import revenueRoutes from "./routes/revenue.js";
 import expenseRoutes from "./routes/expense.js";
+import productRoutes from "./routes/product.js";
 import orderRoutes from "./routes/order.js";
 import campaignRoutes from "./routes/campaign.js";
 
@@ -25,18 +23,11 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
 
 /* routes */
-app.use("/kpi", kpiRoutes);
-app.use("/product", productRoutes);
-app.use("/transaction", transactionRoutes);
 app.use("/revenue", revenueRoutes);
 app.use("/expense", expenseRoutes);
+app.use("/product", productRoutes);
 app.use("/order", orderRoutes);
 app.use("/campaign", campaignRoutes);
-
-// Test route
-app.get("/test", (req, res) => {
-	res.send("This works!");
-});
 
 /* node-postgres Setup */
 const PORT = process.env.PORT || 9000;
@@ -48,6 +39,7 @@ app.listen(PORT, () => {
 
 // Test database connection
 const time = await pool.query("SELECT NOW()");
+console.log("Testing database connection");
 console.log(time.rows);
 
 // await pool.end();

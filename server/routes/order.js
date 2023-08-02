@@ -13,10 +13,9 @@ const query = `SELECT o.order_id, b.buyer_name, o.quantity, r.totalRevenue, o.or
 router.get("/orders", async (req, res) => {
 	try {
 		const data = await pool.query(query);
-		console.log(data.rows);
 		res.status(200).json(data.rows);
 	} catch (err) {
-		res.status(500).json({ message: err.message });
+		res.status(404).json({ message: err.message });
 	}
 });
 
@@ -30,7 +29,8 @@ router.delete("/orders/:id", async (req, res) => {
 		const bought_query = "DELETE FROM bought WHERE order_id = $1";
 		await pool.query(bought_query, [id]);
 
-		const revenue_query = "SELECT revenue_id FROM earned_by WHERE order_id = $1";
+		const revenue_query =
+			"SELECT revenue_id FROM earned_by WHERE order_id = $1";
 		await pool.query(revenue_query, [id]);
 
 		// Delete the corresponding row from the "earned_by" table
@@ -46,7 +46,7 @@ router.delete("/orders/:id", async (req, res) => {
 		res.status(200).json({ message: "Order deleted successfully" });
 	} catch (err) {
 		console.log(err);
-		res.status(500).json({ message: err.message });
+		res.status(404).json({ message: err.message });
 	}
 });
 

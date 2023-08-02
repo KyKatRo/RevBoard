@@ -1,12 +1,14 @@
 import BoxHeader from "@/components/BoxHeader";
 import DashboardBox from "@/components/DashboardBox";
 import FlexBetween from "@/components/FlexBetween";
-import {useGetProductsQuery,
+import {
+	useGetProductsQuery,
 	useGetExpensesByTypeQuery,
 	useGetRevenuesQuery,
 	useGetExpensesQuery,
 	useGetCampaignSuccessPercentageQuery,
-	useGetTargetQuery} from "@/state/api";
+	useGetTargetQuery,
+} from "@/state/api";
 import { Box, Typography, useTheme } from "@mui/material";
 import { useMemo } from "react";
 import {
@@ -16,6 +18,7 @@ import {
 	ResponsiveContainer,
 	XAxis,
 	YAxis,
+	Legend,
 	Line,
 	PieChart,
 	Pie,
@@ -25,35 +28,34 @@ import {
 	ZAxis,
 } from "recharts";
 
-// const pieData = [
-// 	{ name: "Group A", value: 600 },
-// 	{ name: "Group B", value: 400 },
-// ];
-
 const Row2 = () => {
 	const { palette } = useTheme();
 	const pieColors = [palette.primary[300], palette.primary[800]];
-	const { data: productData } = useGetProductsQuery();
+
+	const { data: revenueData } = useGetRevenuesQuery();
+	const { data: expenseData } = useGetExpensesQuery();
 	const { data: expensesByTypeData } = useGetExpensesByTypeQuery();
+	const { data: productData } = useGetProductsQuery();
+	const { data: targetExact } = useGetTargetQuery();
+	const { data: campaignsHitTargetPercentageObject, isLoading } =
+		useGetCampaignSuccessPercentageQuery();
 
-	const { data: campaignsHitTargetPercentageObject, isLoading } = useGetCampaignSuccessPercentageQuery();
+	let campaignsHitTargetPercentage = 0;
+	let target = null;
 
-	let campaignsHitTargetPercentage = 0
-
-	if (!isLoading && campaignsHitTargetPercentageObject) {
-		campaignsHitTargetPercentage = campaignsHitTargetPercentageObject.successPercentage
+	if (!isLoading && campaignsHitTargetPercentageObject && targetExact) {
+		campaignsHitTargetPercentage =
+			campaignsHitTargetPercentageObject.successPercentage;
+		target = Math.round(Number(targetExact) / 1000);
 	}
 
 	const pieData = [
-	 	{ name: 'Campaigns Hit Target', value: campaignsHitTargetPercentage },
-	 	{ name: 'Campaigns Missed Target', value: 100 - campaignsHitTargetPercentage },
-	 ];
-
-
-
-	const { data: targetExact } = useGetTargetQuery();
-	const target = Math.round(targetExact / 1000)
-
+		{ name: "Campaigns Hit Target", value: campaignsHitTargetPercentage },
+		{
+			name: "Campaigns Missed Target",
+			value: 100 - campaignsHitTargetPercentage,
+		},
+	];
 
 	const operationalExpenses = useMemo(() => {
 		return (
@@ -76,9 +78,14 @@ const Row2 = () => {
 		return (
 			productData &&
 			productData.map(
-				({ id, product_name, product_price, expense_amount }) => {
+				({
+					product_id,
+					product_name,
+					product_price,
+					expense_amount,
+				}) => {
 					return {
-						id: id,
+						id: product_id,
 						name: product_name,
 						price: Number(product_price),
 						expense: Number(expense_amount),
@@ -88,8 +95,6 @@ const Row2 = () => {
 		);
 	}, [productData]);
 
-	const { data: revenueData } = useGetRevenuesQuery();
-	const { data: expenseData } = useGetExpensesQuery();
 	const percentIncreaseInRevenue = useMemo(() => {
 		if (revenueData && revenueData.length >= 12) {
 			const revenueMonth11 = Number(revenueData[10].totalrevenue);
@@ -144,7 +149,15 @@ const Row2 = () => {
 							tickFormatter={(tick) => `$${tick / 1000}k`}
 						/>
 						<Tooltip
-							formatter={(value) => `$${Number(value).toLocaleString()}`}
+							formatter={(value) =>
+								`$${Number(value).toLocaleString()}`
+							}
+						/>
+						<Legend
+							height={20}
+							wrapperStyle={{
+								margin: "0 0 10px 0",
+							}}
 						/>
 						<Line
 							type='monotone'
@@ -172,7 +185,6 @@ const Row2 = () => {
 							bottom: 0,
 						}}
 					>
-
 						<Pie
 							stroke='none'
 							data={pieData}
@@ -196,7 +208,7 @@ const Row2 = () => {
 							variant='h3'
 							color={palette.primary[300]}
 						>
-							${target}k {/* Display the actual target value */}
+							${target}k
 						</Typography>
 						<Typography variant='h6'>
 							Goal of this campaign
@@ -205,13 +217,16 @@ const Row2 = () => {
 					<Box flexBasis='40%'>
 						<Typography variant='h5'>Losses in Revenue</Typography>
 						<Typography variant='h6'>
-							Losses are down {percentDecreaseInExpenses.toFixed(2)}%.
+							Losses are down{" "}
+							{percentDecreaseInExpenses.toFixed(2)}%.
 						</Typography>
 						<Typography mt='0.4rem' variant='h5'>
 							Profit Margins
 						</Typography>
 						<Typography variant='h6'>
-							Margins are up by {percentIncreaseInRevenue.toFixed(2)}% from last month.
+							Margins are up by{" "}
+							{percentIncreaseInRevenue.toFixed(2)}% from last
+							month.
 						</Typography>
 					</Box>
 				</FlexBetween>
@@ -248,7 +263,9 @@ const Row2 = () => {
 						/>
 						<ZAxis type='number' range={[20]} />
 						<Tooltip
-							formatter={(value) => `$${Number(value).toLocaleString()}`}
+							formatter={(value) =>
+								`$${Number(value).toLocaleString()}`
+							}
 						/>
 						<Scatter
 							name='Product Expense Ratio'
