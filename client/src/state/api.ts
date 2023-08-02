@@ -1,7 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import {
-	GetKpisResponse,
-	GetTransactionsResponse,
 	GetRevenuesResponse,
 	GetExpensesResponse,
 	GetExpensesByTypeResponse,
@@ -28,14 +26,6 @@ export const api = createApi({
 		"Campaigns",
 	],
 	endpoints: (build) => ({
-		getKpis: build.query<Array<GetKpisResponse>, void>({
-			query: () => `kpi/kpis/`,
-			providesTags: ["Kpis"],
-		}),
-		getTransactions: build.query<Array<GetTransactionsResponse>, void>({
-			query: () => `transaction/transactions/`,
-			providesTags: ["Transactions"],
-		}),
 		getRevenues: build.query<Array<GetRevenuesResponse>, void>({
 			query: () => `revenue/revenues/`,
 			providesTags: ["Revenues"],
@@ -59,11 +49,14 @@ export const api = createApi({
 		deleteOrder: build.mutation<DeleteOrderResponse, number>({
 			query: (id) => ({
 				url: `order/orders/${id}`,
-				method: 'DELETE',
+				method: "DELETE",
 			}),
 			invalidatesTags: ["Orders"],
 		}),
-		getCampaignSuccessPercentage: build.query<GetCampaignSuccessPercentageResponse, void>({
+		getCampaignSuccessPercentage: build.query<
+			GetCampaignSuccessPercentageResponse,
+			void
+		>({
 			query: () => `campaign/success/`,
 			providesTags: ["Campaigns"],
 		}),
@@ -75,8 +68,6 @@ export const api = createApi({
 });
 
 export const {
-	useGetKpisQuery,
-	useGetTransactionsQuery,
 	useGetRevenuesQuery,
 	useGetExpensesQuery,
 	useGetExpensesByTypeQuery,

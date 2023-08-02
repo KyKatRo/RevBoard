@@ -1,6 +1,6 @@
 import DashboardBox from "@/components/DashboardBox";
 import FlexBetween from "@/components/FlexBetween";
-import { useGetKpisQuery, useGetRevenuesQuery } from "@/state/api";
+import { useGetRevenuesQuery } from "@/state/api";
 import { Box, Button, Typography, useTheme } from "@mui/material";
 import { useMemo, useState } from "react";
 import {
@@ -19,12 +19,10 @@ import regression, { DataPoint } from "regression";
 const Predictions = () => {
 	const { palette } = useTheme();
 	const [isPredictions, setIsPredictions] = useState(false);
-	const { data: kpiData } = useGetKpisQuery();
 	const { data: revenueData } = useGetRevenuesQuery();
 
 	const formattedData = useMemo(() => {
-		if (!kpiData) return [];
-		const monthData = revenueData;
+		if (!revenueData) return [];
 
 		const formatted: Array<DataPoint> =
 			revenueData &&
@@ -44,7 +42,7 @@ const Predictions = () => {
 				};
 			})
 		);
-	}, [kpiData]);
+	}, [revenueData]);
 
 	return (
 		<DashboardBox width='100%' height='100%' p='1rem' overflow='hidden'>

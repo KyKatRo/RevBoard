@@ -1,61 +1,3 @@
-export interface ExpensesByCategory {
-	salaries: number;
-	supplies: number;
-	services: number;
-}
-
-export interface Month {
-	id: string;
-	month: string;
-	revenue: number;
-	expenses: number;
-	operationalExpenses: number;
-	nonOperationalExpenses: number;
-}
-
-export interface Day {
-	id: string;
-	date: string;
-	revenue: number;
-	expenses: number;
-}
-
-export interface GetKpisResponse {
-	id: string;
-	_id: string;
-	__v: number;
-	totalProfit: number;
-	totalRevenue: number;
-	totalExpenses: number;
-	expensesByCategory: ExpensesByCategory;
-	monthlyData: Array<Month>;
-	dailyData: Array<Day>;
-	createdAt: string;
-	updatedAt: string;
-}
-
-export interface GetProductsResponse {
-	id: string;
-	_id: string;
-	__v: number;
-	price: number;
-	expense: number;
-	transactions: Array<string>;
-	createdAt: string;
-	updatedAt: string;
-}
-
-export interface GetTransactionsResponse {
-	id: string;
-	_id: string;
-	__v: number;
-	buyer: string;
-	amount: number;
-	productIds: Array<string>;
-	createdAt: string;
-	updatedAt: string;
-}
-
 export interface GetRevenuesResponse {
 	year: number;
 	month: string;
@@ -80,8 +22,7 @@ export interface GetOrdersResponse {
 	buyer_name: string;
 	quantity: number;
 	totalrevenue: number;
-	order_date: number;
-
+	order_date: string;
 }
 
 export interface GetProductsResponse {
@@ -96,7 +37,7 @@ export interface DeleteOrderResponse {
 }
 
 export interface GetCampaignSuccessPercentageResponse {
-	success_percentage: number;
+	successPercentage: number;
 }
 
 export interface GetTargetResponse {
